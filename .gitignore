@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+venv/
+.venv/
+env/
+.env/
+.pycache/
+.vscode
+.mypy_cache
+docker-stack.yml
+

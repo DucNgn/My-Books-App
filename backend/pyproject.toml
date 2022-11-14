@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Duc Nguyen <duc.duke.ngn@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.86.0"
+python-multipart = "^0.0.5"
+black = "^22.10.0"
+uvicorn = "^0.19.0"
+pyjwt = "^2.6.0"
+sqlalchemy = "^1.4.44"
+psycopg2-binary = "^2.8.5"
+requests = "^2.28.1"
+python-jose = {extras = ["cryptography"], version = "^3.1.0"}
+email-validator = "^1.0.5"
+emails = "^0.5.15"
+passlib = {extras = ["bcrypt"], version = "^1.7.2"}
+pydantic = {extras = ["dotenv"], version = "^1.10.2"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
