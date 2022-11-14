@@ -1,66 +1,74 @@
 {
-  "name": "book-project",
-  "version": "0.2.0",
+  "name": "frontend",
+  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@apollo/client": "^3.4.16",
-    "@material-ui/core": "^4.11.2",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.60",
-    "@material-ui/styles": "^4.11.2",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "bootstrap": "^5.1.1",
-    "graphql": "^15.6.1",
-    "react": "^17.0.1",
-    "react-bootstrap": "^2.0.0-rc.0",
-    "react-dom": "^17.0.1",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.0",
-    "typescript": "^4.0.3",
-    "web-vitals": "^0.2.4",
-    "zxcvbn": "^4.4.2"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint . --ext=.ts,.tsx",
-    "tsc": "tsc"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
+    "lint": "vue-cli-service lint"
   },
-  "proxy": "http://localhost:8080/",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "axios": "^0.18.0",
+    "core-js": "^3.4.3",
+    "register-service-worker": "^1.0.0",
+    "typesafe-vuex": "^3.1.1",
+    "vee-validate": "^2.1.7",
+    "vue": "^2.5.22",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.3.0",
+    "vue-router": "^3.0.2",
+    "vuetify": "^1.4.4",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
-    "@types/react-router-dom": "^5.1.7",
-    "@types/zxcvbn": "^4.4.0",
-    "@typescript-eslint/eslint-plugin": "^4.14.1",
-    "@typescript-eslint/parser": "^4.14.1",
-    "eslint": "^7.18.0",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.1-rc.0-next-419ccc2b1-20220217"
+    "@types/jest": "^23.3.13",
+    "@vue/cli-plugin-babel": "^4.1.1",
+    "@vue/cli-plugin-pwa": "^4.1.1",
+    "@vue/cli-plugin-typescript": "^4.1.1",
+    "@vue/cli-plugin-unit-jest": "^4.1.1",
+    "@vue/cli-service": "^4.1.1",
+    "@vue/test-utils": "^1.0.0-beta.28",
+    "babel-core": "7.0.0-bridge.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.4",
+    "vue-cli-plugin-vuetify": "^2.0.2",
+    "vue-template-compiler": "^2.5.22"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "vue",
+      "ts",
+      "tsx"
+    ],
+    "transform": {
+      "^.+\\.vue$": "vue-jest",
+      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "snapshotSerializers": [
+      "jest-serializer-vue"
+    ],
+    "testMatch": [
+      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+    ],
+    "testURL": "http://localhost/"
   }
 }
