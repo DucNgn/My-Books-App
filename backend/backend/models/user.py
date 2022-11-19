@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from backend.db.base_class import Base
 
 if TYPE_CHECKING:
-    from .shelf import Shelf  # noqa: F401
+    from .shelf import Shelves  # noqa: F401
 
 
 class User(Base):
@@ -16,4 +16,4 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
-    shelves = relationship("Shelf", back_populates="owner")
+    shelves = relationship("Shelves", back_populates="owner")

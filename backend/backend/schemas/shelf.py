@@ -1,38 +1,49 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
 
 # Shared properties
-class ShelfBase(BaseModel):
-    title: Optional[str] = None
+class ShelvesBase(BaseModel):
+    ...
 
 
 # Properties to receive on item creation
-class ShelfCreate(ShelfBase):
-    title: str
+class ShelvesCreate(ShelvesBase):
+    reading_shelf: List[str]
+    toread_shelf: List[str]
+    read_shelf: List[str]
+    favorite_shelf: List[str]
 
 
 # Properties to receive on item update
-class ShelfUpdate(ShelfBase):
-    pass
+class ShevlesUpdate(ShelvesBase):
+    reading_shelf: Optional[List[str]]
+    toread_shelf: Optional[List[str]]
+    read_shelf: Optional[List[str]]
+    favorite_shelf: Optional[List[str]]
+    recommendation_shelf: Optional[List[str]]
 
 
 # Properties shared by models stored in DB
-class ShelfInDBBase(ShelfBase):
+class ShelvesInDBBase(ShelvesBase):
     id: int
-    title: str
     owner_id: int
+    reading_shelf: List[str]
+    toread_shelf: List[str]
+    read_shelf: List[str]
+    favorite_shelf: List[str]
+    recommendation_shelf: List[str]
 
     class Config:
         orm_mode = True
 
 
 # Properties to return to client
-class Shelf(ShelfInDBBase):
+class Shelves(ShelvesInDBBase):
     pass
 
 
 # Properties properties stored in DB
-class ShelfInDB(ShelfInDBBase):
+class ShelvesInDB(ShelvesInDBBase):
     pass
