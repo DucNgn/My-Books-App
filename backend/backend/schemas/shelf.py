@@ -1,11 +1,16 @@
 from typing import Optional, List
 
 from pydantic import BaseModel
+from .book import Book
 
 
 # Shared properties
 class ShelvesBase(BaseModel):
-    ...
+    reading_shelf: Optional[List[str]]
+    toread_shelf: Optional[List[str]]
+    read_shelf: Optional[List[str]]
+    favorite_shelf: Optional[List[str]]
+    recommendation_shelf: Optional[List[str]]
 
 
 # Properties to receive on item creation
@@ -18,11 +23,7 @@ class ShelvesCreate(ShelvesBase):
 
 # Properties to receive on item update
 class ShevlesUpdate(ShelvesBase):
-    reading_shelf: Optional[List[str]]
-    toread_shelf: Optional[List[str]]
-    read_shelf: Optional[List[str]]
-    favorite_shelf: Optional[List[str]]
-    recommendation_shelf: Optional[List[str]]
+    pass
 
 
 # Properties shared by models stored in DB
@@ -47,3 +48,10 @@ class Shelves(ShelvesInDBBase):
 # Properties properties stored in DB
 class ShelvesInDB(ShelvesInDBBase):
     pass
+
+class ShelvesWithBooks(Shelves):
+    reading_shelf: Optional[List[Book]] = []
+    toread_shelf: Optional[List[Book]] = []
+    read_shelf: Optional[List[Book]] = []
+    favorite_shelf: Optional[List[Book]] = []
+    recommendation_shelf: Optional[List[Book]] = []
