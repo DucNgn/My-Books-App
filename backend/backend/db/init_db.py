@@ -20,22 +20,32 @@ def init_db(db: Session) -> None:
     user = crud.user.get_by_email(db, email=settings.FIRST_SUPERUSER)
     if not user:
         user_in = schemas.UserCreate(
+            full_name="John Doe",
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
+            favorite_genres=["Mystery", "Thriller", "Fiction"]
         )
         user = crud.user.create(db, obj_in=user_in)  # noqa: F841
 
     shelves = crud.shelves.get_by_owner_id(db, owner_id=user.id)
     if not shelves:
         shelves_in = schemas.ShelvesCreate(
-            reading_shelf=["1", "2", "3"],
-            toread_shelf=["5", "6", "7", "8"],
-            read_shelf=["9", "10", "11", "12"],
-            favorite_shelf=["100", "111", "112"],
+            reading_shelf=["1"],
+            toread_shelf=[],
+            read_shelf=[],
+            favorite_shelf=[]
         )
         shelves = crud.shelves.create_with_owner(
             db, obj_in=shelves_in, owner_id=int(user.id)
         )
 
-    print(shelves.id)
+    default_book = crud.book.get(db, id=1)
+    if not default_book:
+        book_in = schemas.BookCreate(
+            title="Harry Potter",
+            author="JK Rowling",
+            genre="Fiction",
+        )
+        book = crud.book.create(db, obj_in=book_in)
+
