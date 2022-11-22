@@ -36,11 +36,11 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { readCurrentBookInfo } from '@/store/main/getters';
-import { BookInfo } from '@/store/main/state';
+import { IBookInfo } from '@/interfaces';
 
 @Component
 export default class Main extends Vue {
-    private bookData!: BookInfo | null;
+    private bookData!: IBookInfo | null;
 
     public created() {
         this.bookData = readCurrentBookInfo(this.$store);
@@ -73,8 +73,6 @@ export default class Main extends Vue {
     get coverPageUrl() {
         return this.bookData?.cover_image_url;
     }
-
-
 
 }
 

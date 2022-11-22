@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
-import { IUserProfile, IUserProfileUpdate, IUserProfileCreate } from './interfaces';
+import { IUserProfile, IUserProfileUpdate, IUserProfileCreate, IShelvesStorage } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -42,4 +42,13 @@ export const api = {
       token,
     });
   },
+  async getShelvesAndBooks(token: string) {
+    return axios.get<IShelvesStorage>(`${apiUrl}/api/v1/shelves/all`, authHeaders(token));
+  },
+  async updateShelves(token: string, data) {
+    return axios.put<IShelvesStorage>(`${apiUrl}/v1/shelves`, data, authHeaders(token));
+  },
+  async updateRecommendations(token: string) {
+    return axios.put(`${apiUrl}/api/v1/shelves/recommend`, authHeaders(token));
+  }
 };

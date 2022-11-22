@@ -19,6 +19,7 @@ export const getters = {
   firstNotification: (state: MainState) =>
     state.notifications.length > 0 && state.notifications[0],
   currentBook: (state: MainState) => state.currentBook,
+  personalShelves: (state: MainState) => state.personalShelves,
 };
 
 const { read } = getStoreAccessors<MainState, State>("");
@@ -32,3 +33,4 @@ export const readToken = read(getters.token);
 export const readUserProfile = read(getters.userProfile);
 export const readFirstNotification = read(getters.firstNotification);
 export const readCurrentBookInfo = read(getters.currentBook);
+export const readPersonalShelves = read(getters.personalShelves);
