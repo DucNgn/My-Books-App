@@ -12,6 +12,7 @@ const defaultState: MainState = {
   dashboardShowDrawer: true,
   notifications: [],
   currentBook: null,
+  personalShelves: null,
 };
 
 export const mainModule = {

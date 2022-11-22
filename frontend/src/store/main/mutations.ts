@@ -1,5 +1,5 @@
-import { IUserProfile } from '@/interfaces';
-import { MainState, AppNotification, BookInfo } from './state';
+import { IUserProfile, IBookInfo, IShelvesStorage } from '@/interfaces';
+import { MainState, AppNotification} from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { State } from '../state';
 
@@ -29,8 +29,11 @@ export const mutations = {
     removeNotification(state: MainState, payload: AppNotification) {
         state.notifications = state.notifications.filter((notification) => notification !== payload);
     },
-    setCurrentBook(state: MainState, payload:BookInfo) {
+    setCurrentBook(state: MainState, payload:IBookInfo) {
         state.currentBook = payload;
+    },
+    setPersonalShelves(state: MainState, payload:IShelvesStorage) {
+        state.personalShelves = payload;
     }
 };
 
@@ -45,3 +48,4 @@ export const commitSetUserProfile = commit(mutations.setUserProfile);
 export const commitAddNotification = commit(mutations.addNotification);
 export const commitRemoveNotification = commit(mutations.removeNotification);
 export const commitChangeCurrentBook = commit(mutations.setCurrentBook);
+export const commitSetShelves = commit(mutations.setPersonalShelves)

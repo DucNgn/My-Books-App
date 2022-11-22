@@ -65,7 +65,7 @@ def update_shelves(
     return shelves
 
 
-@router.get("/recommend", response_model=schemas.Shelves)
+@router.put("/recommend", response_model=schemas.Shelves)
 def update_recommendations_shelf(
     *,
     db: Session = Depends(deps.get_db),

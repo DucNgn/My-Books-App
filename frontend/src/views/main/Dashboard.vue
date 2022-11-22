@@ -35,13 +35,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Store } from 'vuex';
-import { readUserProfile } from '@/store/main/getters';
-import router from '@/router';
+import { readUserProfile, readPersonalShelves } from '@/store/main/getters';
 import { commitChangeCurrentBook } from '@/store/main/mutations';
+import { dispatchGetPersonalShelvesAndBooks } from '@/store/main/actions';
 
 @Component
 export default class Dashboard extends Vue {
+  public async created() {
+    await dispatchGetPersonalShelvesAndBooks(this.$store);
+  }
+
   get greetedUser() {
     const userProfile = readUserProfile(this.$store);
     if (userProfile) {
@@ -60,11 +63,17 @@ export default class Dashboard extends Vue {
   }
 
   get userFavouriteGenres() {
-    const userGenres = ["Mystery", "Dark", "Fiction"];
-    return userGenres;
+    const userProfile = readUserProfile(this.$store);
+    if (userProfile) {
+      if (userProfile.favorite_genres) {
+        return userProfile.favorite_genres
+      }
+    }
+    return []
   }
 
   get getShelvesAndBooks() {
+    const personalShelvesData = readPersonalShelves(this.$store);
     const sharedHeaders = [
       { text: 'Title', value: 'title', align: 'left' },
       { text: 'Author', value: 'author' },
@@ -72,141 +81,29 @@ export default class Dashboard extends Vue {
       { text: 'ISBN', value: 'isbn' },
       { text: 'Number of pages', value: 'num_of_pages' }
     ];
-    const mockData = {
-      "id": 1,
-      "owner_id": 1,
-      "Reading": {
-        headers: sharedHeaders,
-        books: [
-          {
-            "id": 1,
-            "title": "PHP 1",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://i.guim.co.uk/img/static/sys-images/Guardian/Pix/pictures/2015/3/27/1427451436337/c75efc44-41b0-452a-8858-0811c0fd9978-401x600.jpeg?width=300&quality=45&auto=format&fit=max&dpr=2&s=b37753a8032188c743bab10405ad9508",
-            "num_of_pages": 200
-          },
-          {
-            "id": 2,
-            "title": "Did Harry speak Python 2",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://i.guim.co.uk/img/static/sys-images/Guardian/Pix/pictures/2015/3/27/1427451436337/c75efc44-41b0-452a-8858-0811c0fd9978-401x600.jpeg?width=300&quality=45&auto=format&fit=max&dpr=2&s=b37753a8032188c743bab10405ad9508",
-            "num_of_pages": 200
-          },
-          {
-            "id": 3,
-            "title": "JS 3",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          }]
-      },
+    const realData = {
       "To Read": {
         headers: sharedHeaders,
-        books: [
-          {
-            "id": 4,
-            "title": "PHP 1",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-          {
-            "id": 5,
-            "title": "Did Harry speak Python 2",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-          {
-            "id": 6,
-            "title": "JS 3",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          }]
+        books: personalShelvesData?.toread_shelf
+      },
+      "Reading": {
+        headers: sharedHeaders,
+        books: personalShelvesData?.reading_shelf
       },
       "Read": {
         headers: sharedHeaders,
-        books: [
-          {
-            "id": 7,
-            "title": "PHP 1",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-          {
-            "id": 8,
-            "title": "Did Harry speak Python 2",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-          {
-            "id": 9,
-            "title": "JS 3",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          }]
+        books: personalShelvesData?.read_shelf
       },
-      "Favorite": {
+      "Favourite": {
         headers: sharedHeaders,
-        books: [
-          {
-            "id": 10,
-            "title": "PHP 1",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-          {
-            "id": 11,
-            "title": "Did Harry speak Python 2",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-          {
-            "id": 12,
-            "title": "JS 3",
-            "author": "JK Rowling",
-            "genre": "Mystery",
-            "isbn": "12345",
-            "cover_image_url": "https://somthing",
-            "num_of_pages": 200
-          },
-        ]
+        books: personalShelvesData?.favorite_shelf
       },
       "Recommendation": {
         headers: sharedHeaders,
-        books: []
+        books: personalShelvesData?.recommendation_shelf
       }
-    }
-    const data = Object.fromEntries(Object.entries(mockData).filter(([key]) => !["id", "owner_id"].includes(key)))
-    return data
+    };
+    return realData;
   }
 }
 </script>

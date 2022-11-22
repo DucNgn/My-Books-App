@@ -10,6 +10,7 @@ import {
     commitRemoveNotification,
     commitSetLoggedIn,
     commitSetLogInError,
+    commitSetShelves,
     commitSetToken,
     commitSetUserProfile,
 } from './mutations';
@@ -29,6 +30,7 @@ export const actions = {
                 commitSetLogInError(context, false);
                 await dispatchGetUserProfile(context);
                 await dispatchRouteLoggedIn(context);
+                await dispatchGetPersonalShelvesAndBooks(context);
                 commitAddNotification(context, { content: 'Logged in', color: 'success' });
             } else {
                 await dispatchLogOut(context);
@@ -154,6 +156,48 @@ export const actions = {
             commitAddNotification(context, { color: 'error', content: 'Error resetting password' });
         }
     },
+    async actionRetrieveShelvesAndBooks(context: MainContext) {
+        try {
+            const response = await api.getShelvesAndBooks(context.state.token);
+            if (response.data) {
+                console.log(response.data);
+                commitSetShelves(context, response.data)
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionUpdateShelves(context: MainContext, payload) {
+        try {
+            const loadingNotification = { content: 'Moving Book to a new shelf', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.updateShelves(context.state.token, payload),
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            await dispatchGetPersonalShelvesAndBooks(context);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Shelves successfully updated', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionUpdateRecommendations(context: MainContext) {
+        try {
+            const loadingNotification = { content: 'Updating Recommendations', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.updateRecommendations(context.state.token),
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            await dispatchGetPersonalShelvesAndBooks(context);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Recommendations successfully updated', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+
+    }
 };
 
 const { dispatch } = getStoreAccessors<MainState | any, State>('');
@@ -171,3 +215,7 @@ export const dispatchUpdateUserProfile = dispatch(actions.actionUpdateUserProfil
 export const dispatchRemoveNotification = dispatch(actions.removeNotification);
 export const dispatchPasswordRecovery = dispatch(actions.passwordRecovery);
 export const dispatchResetPassword = dispatch(actions.resetPassword);
+export const dispatchGetPersonalShelvesAndBooks = dispatch(actions.actionRetrieveShelvesAndBooks);
+export const dispatchUpdateShelves = dispatch(actions.actionUpdateShelves);
+export const dispatchUpdateRecommendations = dispatch(actions.actionUpdateRecommendations);
+
