@@ -7,7 +7,9 @@
                 </div>
             </v-card-title>
             <v-card-text>
-                <v-img :src=coverPageUrl max-height="400" max-width="250"></v-img>
+                <div class="text-center">
+                    <v-img :src=coverPageUrl max-height="400" max-width="250" justify="center"></v-img>
+                </div>
                 <br />
                 <v-divider></v-divider>
                 <v-expansion-panel>
