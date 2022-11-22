@@ -14,4 +14,15 @@ export interface MainState {
     dashboardMiniDrawer: boolean;
     dashboardShowDrawer: boolean;
     notifications: AppNotification[];
+    currentBook: BookInfo | null;
+}
+
+export interface BookInfo {
+    id: string;
+    title: string;
+    author: string;
+    genre: string;
+    isbn: Number;
+    cover_image_url: string;
+    num_of_pages: Number;
 }
