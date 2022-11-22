@@ -57,7 +57,7 @@ export default class Dashboard extends Vue {
   }
 
   public clickRow(book) {
-    console.log("You clicked a book! ID:" + book.id);
+    console.log("You clicked on a book! Book ID:" + book.id);
     commitChangeCurrentBook(this.$store, book);
     this.$router.push({ name: "bookDetails" })
   }
@@ -81,7 +81,7 @@ export default class Dashboard extends Vue {
       { text: 'ISBN', value: 'isbn' },
       { text: 'Number of pages', value: 'num_of_pages' }
     ];
-    const realData = {
+    const formattedData = {
       "To Read": {
         headers: sharedHeaders,
         books: personalShelvesData?.toread_shelf
@@ -103,7 +103,7 @@ export default class Dashboard extends Vue {
         books: personalShelvesData?.recommendation_shelf
       }
     };
-    return realData;
+    return formattedData;
   }
 }
 </script>
