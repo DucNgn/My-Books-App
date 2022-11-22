@@ -53,6 +53,7 @@ def update_user_me(
     password: str = Body(None),
     full_name: str = Body(None),
     email: EmailStr = Body(None),
+    favorite_genres: List[str] = Body(None),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -66,6 +67,8 @@ def update_user_me(
         user_in.full_name = full_name
     if email is not None:
         user_in.email = email
+    if favorite_genres is not None:
+        user_in.favorite_genres = favorite_genres
     user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
     return user
 

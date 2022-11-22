@@ -1,6 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from backend import crud, models, schemas
@@ -60,5 +61,24 @@ def update_shelves(
     shelves = crud.shelves.get_by_owner_id(db, owner_id=current_user.id)
     if not shelves:
         raise HTTPException(status_code=404, detail="The user does not have any shelf")
+    shelves = crud.shelves.update(db, db_obj=shelves, obj_in=shelves_in)
+    return shelves
+
+
+@router.get("/recommend", response_model=schemas.Shelves)
+def update_recommendations_shelf(
+    *,
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_superuser)
+):
+    shelves = crud.shelves.get_by_owner_id(db, owner_id=current_user.id)
+    if not shelves:
+        raise HTTPException(status_code=404, detail="The user does not have any shelf")
+    current_shelves = jsonable_encoder(shelves)
+    shelves_in = schemas.ShevlesUpdate(**current_shelves)
+    recommended_book_ids = crud.book.get_suggestions(
+        db=db, favorite_genres=current_user.favorite_genres
+    )
+    shelves_in.recommendation_shelf = recommended_book_ids
     shelves = crud.shelves.update(db, db_obj=shelves, obj_in=shelves_in)
     return shelves
