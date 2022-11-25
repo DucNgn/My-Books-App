@@ -1,4 +1,4 @@
-import { IUserProfile, IBookInfo, IShelvesStorage } from "@/interfaces";
+import { IUserProfile, IBookInfo, IShelvesStorage } from '@/interfaces';
 
 export interface AppNotification {
   content: string;

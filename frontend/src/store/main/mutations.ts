@@ -29,12 +29,12 @@ export const mutations = {
     removeNotification(state: MainState, payload: AppNotification) {
         state.notifications = state.notifications.filter((notification) => notification !== payload);
     },
-    setCurrentBook(state: MainState, payload:IBookInfo) {
+    setCurrentBook(state: MainState, payload: IBookInfo) {
         state.currentBook = payload;
     },
-    setPersonalShelves(state: MainState, payload:IShelvesStorage) {
+    setPersonalShelves(state: MainState, payload: IShelvesStorage) {
         state.personalShelves = payload;
-    }
+    },
 };
 
 const {commit} = getStoreAccessors<MainState | any, State>('');
@@ -48,4 +48,4 @@ export const commitSetUserProfile = commit(mutations.setUserProfile);
 export const commitAddNotification = commit(mutations.addNotification);
 export const commitRemoveNotification = commit(mutations.removeNotification);
 export const commitChangeCurrentBook = commit(mutations.setCurrentBook);
-export const commitSetShelves = commit(mutations.setPersonalShelves)
+export const commitSetShelves = commit(mutations.setPersonalShelves);
