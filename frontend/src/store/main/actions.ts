@@ -160,8 +160,7 @@ export const actions = {
         try {
             const response = await api.getShelvesAndBooks(context.state.token);
             if (response.data) {
-                console.log(response.data);
-                commitSetShelves(context, response.data)
+                commitSetShelves(context, response.data);
             }
         } catch (error) {
             await dispatchCheckApiError(context, error);
@@ -197,7 +196,7 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
 
-    }
+    },
 };
 
 const { dispatch } = getStoreAccessors<MainState | any, State>('');

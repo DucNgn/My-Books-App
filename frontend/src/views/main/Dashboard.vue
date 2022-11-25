@@ -57,19 +57,18 @@ export default class Dashboard extends Vue {
   }
 
   public clickRow(book) {
-    console.log("You clicked on a book! Book ID:" + book.id);
     commitChangeCurrentBook(this.$store, book);
-    this.$router.push({ name: "bookDetails" })
+    this.$router.push({ name: 'bookDetails' });
   }
 
   get userFavouriteGenres() {
     const userProfile = readUserProfile(this.$store);
     if (userProfile) {
       if (userProfile.favorite_genres) {
-        return userProfile.favorite_genres
+        return userProfile.favorite_genres;
       }
     }
-    return []
+    return [];
   }
 
   get getShelvesAndBooks() {
@@ -79,29 +78,29 @@ export default class Dashboard extends Vue {
       { text: 'Author', value: 'author' },
       { text: 'Genre', value: 'genre' },
       { text: 'ISBN', value: 'isbn' },
-      { text: 'Number of pages', value: 'num_of_pages' }
+      { text: 'Number of pages', value: 'num_of_pages' },
     ];
     const formattedData = {
-      "To Read": {
+      'To Read': {
         headers: sharedHeaders,
-        books: personalShelvesData?.toread_shelf
+        books: personalShelvesData?.toread_shelf,
       },
-      "Reading": {
+      'Reading': {
         headers: sharedHeaders,
-        books: personalShelvesData?.reading_shelf
+        books: personalShelvesData?.reading_shelf,
       },
-      "Read": {
+      'Read': {
         headers: sharedHeaders,
-        books: personalShelvesData?.read_shelf
+        books: personalShelvesData?.read_shelf,
       },
-      "Favourite": {
+      'Favourite': {
         headers: sharedHeaders,
-        books: personalShelvesData?.favorite_shelf
+        books: personalShelvesData?.favorite_shelf,
       },
-      "Recommendation": {
+      'Recommendation': {
         headers: sharedHeaders,
-        books: personalShelvesData?.recommendation_shelf
-      }
+        books: personalShelvesData?.recommendation_shelf,
+      },
     };
     return formattedData;
   }

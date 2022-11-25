@@ -10,10 +10,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=schemas.Book)
-def get_book_by_id(
-    db: Session = Depends(deps.get_db),
-    id: str = ""
-) -> Any:
+def get_book_by_id(db: Session = Depends(deps.get_db), id: str = "") -> Any:
     """
     Retrieve shelves for the current user.
     """
@@ -21,4 +18,3 @@ def get_book_by_id(
     if not current_book:
         raise HTTPException(status_code=404, detail="Invalid Book Request")
     return current_book
-

@@ -54,6 +54,11 @@ By default, front-end starts at localhost:8080.
 # With Docker 🐳
 - (coming soon)
 
+# During Development:
+- `make lint-backend`: to run linter through all backend code (all dependencies needed to be installed inside `./venv`)
+- `make lint-frontend`: to run linter through all frontend code (all dependencies needed to be installed inside `node_modules`)
+- `poetry export -f requirements.txt --output requirements.txt` to export all poetry dependencies to requirements.txt file
+
 # Technologies 🛠️:
 - Back-end: Python with FastAPI
 - Database: PostgreSQL with SQLAlchemy
