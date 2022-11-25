@@ -7,14 +7,23 @@
 
 #### Requirements:
 - Python 3.9+
-- [Poetry](https://python-poetry.org/)
 
 #### Steps:
 
 - Start the Postgresql Database: `docker-compose up db` from the main directory.
+- 2 options to install dependencies
+
+1. With Poetry (recommended, install [Poetry](https://python-poetry.org))
 - `cd backend` to change directory to the backend folder.
 - `poetry shell` to activate a virtual shell for the back-end.
 - `poetry install` to install Python dependencies.
+
+2. Without Poetry:
+- `cd backend` to change directory to the backend folder.
+- `python -m venv .venv` to create a virtual environment.
+- `source .venv/bin/activate` to activate the virtual environment.
+- `pip install -r requirements.txt` to install the dependencies.
+  
 
 - *Optional*: 
     Run: ```./prestart.sh```
