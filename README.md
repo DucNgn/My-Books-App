@@ -59,6 +59,13 @@ By default, front-end starts at localhost:8080.
 - `make lint-frontend`: to run linter through all frontend code (all dependencies needed to be installed inside `node_modules`)
 - `poetry export -f requirements.txt --output requirements.txt` to export all poetry dependencies to requirements.txt file
 
+# Testing 🧪
+While inside virtual environment created by Poetry. 
+- `cd backend` to change directory to the backend folder (the directory that contains `pyproject.toml`)
+- `poetry run pytest` to run all tests.
+- `poetry run pytest -k "prefix_of_your_test_name"` to run a subset of test cases.
+  - Example: If run `poetry run pytest -k "test_check"`, that will run 2 tests: `test_check_user_created` and `test_check_shelves_have_books`, but not `test_create_user`
+
 # Technologies 🛠️:
 - Back-end: Python with FastAPI
 - Database: PostgreSQL with SQLAlchemy
