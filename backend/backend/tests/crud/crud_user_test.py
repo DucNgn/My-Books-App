@@ -80,8 +80,9 @@ def test_get_multi(db) -> None:
     retrieved = crud.user.get_multi(db)
     pertinent = user_util.filter_pertinent_ids(retrieved, [test_user.id, optional_test_user.id])
     # Assert
-    # if we did not add any other books by startup script, should only have 3 users in db
-    assert len(retrieved) == 3
+    # Can't actually assert length of all users since we create users in test crud_shelf
+    # retrieved is for sure > pertinent though because of default user
+    assert len(retrieved) > len(pertinent)
     assert user_util.compare_user(pertinent[0], test_user)
     assert user_util.compare_user(pertinent[1], optional_test_user)
 
