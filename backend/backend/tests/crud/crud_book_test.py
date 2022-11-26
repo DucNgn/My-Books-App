@@ -1,11 +1,12 @@
 import pytest
 
 from backend.db.session import SessionLocal
-from backend import crud, schemas, db
+from backend import crud, schemas
+from backend.tests.utils import book_util
 
 # Variables to use in tests
-global base_book_id
-global optional_book_id
+global base_book
+global optional_book
 
 
 @pytest.fixture
@@ -22,8 +23,8 @@ def test_create(db) -> None:
     )
     # Do work
     created = crud.book.create(db, obj_in=test_book)
-    global base_book_id
-    base_book_id = created.id
+    global base_book
+    base_book = created
     # Assert
     assert created.title == "test_title"
     assert created.author == "test_author"
@@ -42,8 +43,8 @@ def test_create_optional_parameters(db) -> None:
     )
     # Do work
     created = crud.book.create(db, obj_in=test_book)
-    global optional_book_id
-    optional_book_id = created.id
+    global optional_book
+    optional_book = created
     # Assert
     assert created.title == "test_title"
     assert created.author == "test_author"
@@ -56,8 +57,7 @@ def test_create_optional_parameters(db) -> None:
 
 def test_get(db) -> None:
     # Do work
-    retrieved = crud.book.get(db, base_book_id)
-    print(f"this:{retrieved.id}")
+    retrieved = crud.book.get(db, base_book.id)
     # Assert
     assert retrieved.title == "test_title"
     assert retrieved.author == "test_author"
@@ -66,8 +66,7 @@ def test_get(db) -> None:
 
 def test_get_optional_parameters(db) -> None:
     # Do work
-    retrieved = crud.book.get(db, optional_book_id)
-    print(f"this:{retrieved.id}")
+    retrieved = crud.book.get(db, optional_book.id)
     # Assert
     assert retrieved.title == "test_title"
     assert retrieved.author == "test_author"
@@ -76,4 +75,55 @@ def test_get_optional_parameters(db) -> None:
     assert retrieved.publication_year == 2022
     assert retrieved.num_of_pages == 17
     assert retrieved.cover_image_url is None
-# How would I test suggestion? Create mock books and then call get preferences on arbitrary list of genres?
+
+
+# Note: PLEASE CLEAR DB BEFORE RUNNING TEST TO RUN THIS TEST
+# Check if we can retrieve the two we just added in db + start up initial books
+def test_get_multi(db) -> None:
+    # Do Work
+    retrieved = crud.book.get_multi(db)
+    pertinent = book_util.filter_pertinent_ids(retrieved, [base_book.id, optional_book.id])
+    # Assert
+    # if we did not add any other books by startup script, should only have 3 books in db
+    assert len(retrieved) == 3
+    assert book_util.compare_books(pertinent[0], base_book)
+    assert book_util.compare_books(pertinent[1], optional_book)
+
+
+def test_remove(db) -> None:
+    # Do work
+    deleted = crud.book.remove(db, id=optional_book.id)
+    retrieved = crud.book.get(db, deleted.id)
+    # Assert
+    assert retrieved is None
+
+
+def test_update(db) -> None:
+    # Set Up
+    to_update = crud.book.get(db, base_book.id)
+    to_update_with = schemas.BookCreate(
+        title="changed",
+        author="CHANGED",
+        genre="test_genre",
+    )
+    # Do Work
+    crud.book.update(db, db_obj=to_update, obj_in=to_update_with)
+    changed = crud.book.get(db, base_book.id)
+    # Assert
+    assert changed.title == "changed"
+    assert changed.author == "CHANGED"
+    assert changed.genre == "test_genre"
+
+
+def test_retrieve_suggestions(db) -> None:
+    # Set Up
+    list_genres = ["fantasy", "romance", "sci-fi", "comedy"]
+    list_id = book_util.populate_books(db, list_genres)
+    # Do Work
+    list_recommended_id = crud.book.get_suggestions(db, favorite_genres=[list_genres[0], list_genres[2]])
+    # Assert
+    assert len(list_recommended_id) == 10
+    for recommended_id in list_recommended_id:
+        retrieved = crud.book.get(db, recommended_id)
+        assert retrieved.genre == list_genres[0] or list_genres[2]
+        assert retrieved.id in list_id
