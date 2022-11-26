@@ -37,9 +37,12 @@ export interface IBookInfo {
     id: string;
     title: string;
     author: string;
+    rating: string;
+    description: string;
+    isbn: string;
     genre: string;
-    isbn: number;
-    publication_year: number;
-    cover_image_url: string;
     num_of_pages: number;
+    publisher: string;
+    publication_year: string;
+    cover_image_url: string;
 }

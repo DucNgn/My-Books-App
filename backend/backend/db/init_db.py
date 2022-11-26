@@ -1,3 +1,7 @@
+import logging
+import os
+import csv
+
 from sqlalchemy.orm import Session
 
 from backend import crud, schemas
@@ -5,6 +9,9 @@ from backend.core.config import settings
 
 from backend.db.base import Base
 from backend.db.session import engine
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -31,17 +38,36 @@ def init_db(db: Session) -> None:
     shelves = crud.shelves.get_by_owner_id(db, owner_id=user.id)
     if not shelves:
         shelves_in = schemas.ShelvesCreate(
-            reading_shelf=["1"], toread_shelf=[], read_shelf=[], favorite_shelf=[]
+            reading_shelf=['1', '2', '3', '4', '5'], 
+            toread_shelf=['6', '7', '8', '9', '10'], 
+            read_shelf=['11','12','13','14','15'], 
+            favorite_shelf=['1','16']
         )
         shelves = crud.shelves.create_with_owner(
             db, obj_in=shelves_in, owner_id=int(user.id)
         )
 
-    default_book = crud.book.get(db, id=1)
-    if not default_book:
-        book_in = schemas.BookCreate(
-            title="Harry Potter",
-            author="JK Rowling",
-            genre="Fiction",
-        )
-        book = crud.book.create(db, obj_in=book_in)
+    instantiate_books(db)
+
+
+def instantiate_books(db: Session):
+    # crud.book.remove_all(db)
+
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    with open(os.path.join(__location__, 'books_data.csv'), mode='r', encoding='utf8') as file:
+        csvreader = csv.reader(file)
+        counter = 0
+        for row in csvreader:
+            book_insert = schemas.Book(
+                title=row[0],
+                author=row[1],
+                rating=row[2],
+                description=row[3],
+                isbn=row[4],
+                genre=row[5],
+                num_of_pages=row[6],
+                publisher=row[7],
+                publication_year=row[8],
+                cover_image_url=row[9]
+            )
+            book = crud.book.create(db, obj_in=book_insert)
