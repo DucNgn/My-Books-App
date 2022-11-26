@@ -50,5 +50,5 @@ export const api = {
   },
   async updateRecommendations(token: string) {
     return axios.put(`${apiUrl}/api/v1/shelves/recommend`, authHeaders(token));
-  }
+  },
 };

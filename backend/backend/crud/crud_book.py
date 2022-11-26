@@ -15,10 +15,8 @@ class CRUDBook(CRUDBase[Book, BookCreate, BookUpdate]):
         """
         # Always refer to genre in lowercase when interact with database.
         favorite_genres = set([genre.lower() for genre in favorite_genres])
-        recommended_books = (
-            db.query(Book).filter(Book.genre.in_(favorite_genres)).all()
-        )
-        
+        recommended_books = db.query(Book).filter(Book.genre.in_(favorite_genres)).all()
+
         recommended_book_ids = [book.id for book in recommended_books]
         return recommended_book_ids
 

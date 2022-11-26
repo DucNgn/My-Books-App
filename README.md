@@ -7,14 +7,23 @@
 
 #### Requirements:
 - Python 3.9+
-- [Poetry](https://python-poetry.org/)
 
 #### Steps:
 
 - Start the Postgresql Database: `docker-compose up db` from the main directory.
+- 2 options to install dependencies
+
+1. With Poetry (recommended, install [Poetry](https://python-poetry.org))
 - `cd backend` to change directory to the backend folder.
 - `poetry shell` to activate a virtual shell for the back-end.
 - `poetry install` to install Python dependencies.
+
+2. Without Poetry:
+- `cd backend` to change directory to the backend folder.
+- `python -m venv .venv` to create a virtual environment.
+- `source .venv/bin/activate` to activate the virtual environment.
+- `pip install -r requirements.txt` to install the dependencies.
+  
 
 - *Optional*: 
     Run: ```./prestart.sh```
@@ -44,6 +53,18 @@ By default, front-end starts at localhost:8080.
 
 # With Docker 🐳
 - (coming soon)
+
+# During Development:
+- `make lint-backend`: to run linter through all backend code (all dependencies needed to be installed inside `./venv`)
+- `make lint-frontend`: to run linter through all frontend code (all dependencies needed to be installed inside `node_modules`)
+- `poetry export -f requirements.txt --output requirements.txt` to export all poetry dependencies to requirements.txt file
+
+# Testing 🧪
+While inside virtual environment created by Poetry. 
+- `cd backend` to change directory to the backend folder (the directory that contains `pyproject.toml`)
+- `poetry run pytest` to run all tests.
+- `poetry run pytest -k "prefix_of_your_test_name"` to run a subset of test cases.
+  - Example: If run `poetry run pytest -k "test_check"`, that will run 2 tests: `test_check_user_created` and `test_check_shelves_have_books`, but not `test_create_user`
 
 # Technologies 🛠️:
 - Back-end: Python with FastAPI

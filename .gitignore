@@ -6,7 +6,6 @@ env/
 .env/
 .pycache/
 __pycache__/
-.vscode
 .mypy_cache
 docker-stack.yml
 

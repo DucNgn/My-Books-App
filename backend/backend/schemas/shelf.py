@@ -49,6 +49,7 @@ class Shelves(ShelvesInDBBase):
 class ShelvesInDB(ShelvesInDBBase):
     pass
 
+
 class ShelvesWithBooks(Shelves):
     reading_shelf: Optional[List[Book]] = []
     toread_shelf: Optional[List[Book]] = []

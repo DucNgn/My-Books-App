@@ -1,5 +1,5 @@
 export interface IUserProfile {
-    favorite_genres: string[]
+    favorite_genres: string[];
     email: string;
     is_active: boolean;
     is_superuser: boolean;
@@ -30,7 +30,7 @@ export interface IShelvesStorage {
     toread_shelf: IBookInfo[];
     read_shelf: IBookInfo[];
     favorite_shelf: IBookInfo[];
-    recommendation_shelf: IBookInfo[]
+    recommendation_shelf: IBookInfo[];
 }
 
 export interface IBookInfo {
@@ -38,8 +38,8 @@ export interface IBookInfo {
     title: string;
     author: string;
     genre: string;
-    isbn: Number;
-    publication_year: Number;
+    isbn: number;
+    publication_year: number;
     cover_image_url: string;
-    num_of_pages: Number;
+    num_of_pages: number;
 }
