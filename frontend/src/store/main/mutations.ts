@@ -35,6 +35,15 @@ export const mutations = {
     setPersonalShelves(state: MainState, payload: IShelvesStorage) {
         state.personalShelves = payload;
     },
+    setIsShowingAddBookDialog(state: MainState, payload: boolean) {
+        state.isShowingAddBookDialog = payload;
+    },
+    setBookSearchResults(state: MainState, payload: IBookInfo[]) {
+        state.bookSearchResults = payload;
+    },
+    removeBookSearchResults(state: MainState) {
+        state.bookSearchResults = []
+    }
 };
 
 const {commit} = getStoreAccessors<MainState | any, State>('');
@@ -49,3 +58,7 @@ export const commitAddNotification = commit(mutations.addNotification);
 export const commitRemoveNotification = commit(mutations.removeNotification);
 export const commitChangeCurrentBook = commit(mutations.setCurrentBook);
 export const commitSetShelves = commit(mutations.setPersonalShelves);
+export const commitIsShowingAddBookDialog = commit(mutations.setIsShowingAddBookDialog);
+export const commitSetBookSearchResults = commit(mutations.setBookSearchResults);
+export const commitRemoveBookSearchResults = commit(mutations.removeBookSearchResults);
+ 

@@ -5,10 +5,10 @@ from sqlalchemy.orm import Session
 
 from backend.models.shelf import Shelves
 from backend.crud.base import CRUDBase
-from backend.schemas.shelf import ShelvesCreate, ShevlesUpdate
+from backend.schemas.shelf import ShelvesCreate, ShelvesUpdate
 
 
-class CRUDShelves(CRUDBase[Shelves, ShelvesCreate, ShevlesUpdate]):
+class CRUDShelves(CRUDBase[Shelves, ShelvesCreate, ShelvesUpdate]):
     def create_with_owner(
         self, db: Session, *, obj_in: ShelvesCreate, owner_id: int
     ) -> Shelves:
