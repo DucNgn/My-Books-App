@@ -31,7 +31,11 @@ def init_db(db: Session) -> None:
     shelves = crud.shelves.get_by_owner_id(db, owner_id=user.id)
     if not shelves:
         shelves_in = schemas.ShelvesCreate(
-            reading_shelf=["1"], toread_shelf=[], read_shelf=[], favorite_shelf=[]
+            reading_shelf=["1"],
+            toread_shelf=[],
+            read_shelf=[],
+            favorite_shelf=[],
+            recommendation_shelf=[],
         )
         shelves = crud.shelves.create_with_owner(
             db, obj_in=shelves_in, owner_id=int(user.id)

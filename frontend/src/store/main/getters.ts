@@ -20,6 +20,8 @@ export const getters = {
     state.notifications.length > 0 && state.notifications[0],
   currentBook: (state: MainState) => state.currentBook,
   personalShelves: (state: MainState) => state.personalShelves,
+  isShowingAddBookDialog: (state: MainState) => state.isShowingAddBookDialog,
+  bookSearchResults: (state: MainState) => state.bookSearchResults,
 };
 
 const { read } = getStoreAccessors<MainState, State>('');
@@ -34,3 +36,5 @@ export const readUserProfile = read(getters.userProfile);
 export const readFirstNotification = read(getters.firstNotification);
 export const readCurrentBookInfo = read(getters.currentBook);
 export const readPersonalShelves = read(getters.personalShelves);
+export const readShowAddBookDialog = read(getters.isShowingAddBookDialog);
+export const readBookSearchResults = read(getters.bookSearchResults);

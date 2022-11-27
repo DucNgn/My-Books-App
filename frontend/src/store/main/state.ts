@@ -1,4 +1,4 @@
-import { IUserProfile, IBookInfo, IShelvesStorage } from '@/interfaces';
+import { IUserProfile, IBookInfo, IShelvesStorage } from "@/interfaces";
 
 export interface AppNotification {
   content: string;
@@ -16,4 +16,6 @@ export interface MainState {
   notifications: AppNotification[];
   currentBook: IBookInfo | null;
   personalShelves: IShelvesStorage | null;
+  isShowingAddBookDialog: boolean;
+  bookSearchResults: IBookInfo[];
 }

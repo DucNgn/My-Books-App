@@ -36,3 +36,6 @@ class Book(BookInDBBase):
 
 class BookInDB(BookInDBBase):
     pass
+
+class BookSearch(BaseModel):
+    book_title: str

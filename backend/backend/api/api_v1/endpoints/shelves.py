@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/", response_model=schemas.Shelves)
 def get_shelves_with_books_id(
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_superuser),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Retrieve shelves for the current user.
@@ -28,7 +28,7 @@ def get_shelves_with_books_id(
 @router.get("/all", response_model=schemas.ShelvesWithBooks)
 def get_shelves_with_books_props(
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_superuser),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Retrieve shelves for the current user.
@@ -55,13 +55,14 @@ def get_shelves_with_books_props(
 def update_shelves(
     *,
     db: Session = Depends(deps.get_db),
-    shelves_in: schemas.ShevlesUpdate,
-    current_user: models.User = Depends(deps.get_current_active_superuser)
+    shelves_in: schemas.ShelvesUpdate,
+    current_user: models.User = Depends(deps.get_current_active_user)
 ):
     shelves = crud.shelves.get_by_owner_id(db, owner_id=current_user.id)
     if not shelves:
         raise HTTPException(status_code=404, detail="The user does not have any shelf")
     shelves = crud.shelves.update(db, db_obj=shelves, obj_in=shelves_in)
+    print(shelves)
     return shelves
 
 
@@ -69,13 +70,13 @@ def update_shelves(
 def update_recommendations_shelf(
     *,
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_superuser)
+    current_user: models.User = Depends(deps.get_current_active_user)
 ):
     shelves = crud.shelves.get_by_owner_id(db, owner_id=current_user.id)
     if not shelves:
         raise HTTPException(status_code=404, detail="The user does not have any shelf")
     current_shelves = jsonable_encoder(shelves)
-    shelves_in = schemas.ShevlesUpdate(**current_shelves)
+    shelves_in = schemas.ShelvesUpdate(**current_shelves)
     recommended_book_ids = crud.book.get_suggestions(
         db=db, favorite_genres=current_user.favorite_genres
     )

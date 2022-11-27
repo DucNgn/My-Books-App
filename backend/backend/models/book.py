@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Float, Integer, String
+
 from backend.db.base_class import Base
 
 
