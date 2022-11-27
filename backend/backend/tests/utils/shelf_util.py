@@ -1,4 +1,5 @@
 from backend import crud, schemas
+from typing import List
 
 
 def create_user(db, email):
@@ -27,7 +28,8 @@ def compare_shelf(shelf1, shelf2) -> bool:
         return False
     return True
 
-def filter_pertinent_ids(list_shelves, shelf_id) -> []:
+
+def filter_pertinent_ids(list_shelves, shelf_id) -> List:
     to_return = []
     for shelf in list_shelves:
         if shelf.id in shelf_id:

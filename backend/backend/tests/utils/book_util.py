@@ -1,8 +1,8 @@
-from backend.db.session import SessionLocal
 from backend import crud, schemas
+from typing import List
 
 
-def populate_books(db, list_genres) -> []:
+def populate_books(db, list_genres) -> List:
     list_id = []
     for genre in list_genres:
         for count in range(5):
@@ -18,7 +18,7 @@ def populate_books(db, list_genres) -> []:
     return list_id
 
 
-def filter_pertinent_ids(list_books, list_id) -> []:
+def filter_pertinent_ids(list_books, list_id) -> List:
     to_return = []
     for book in list_books:
         if book.id in list_id:

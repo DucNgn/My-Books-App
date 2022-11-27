@@ -1,4 +1,7 @@
-def filter_pertinent_ids(list_users, list_id) -> []:
+from typing import List
+
+
+def filter_pertinent_ids(list_users, list_id) -> List:
     to_return = []
     for user in list_users:
         if user.id in list_id:
