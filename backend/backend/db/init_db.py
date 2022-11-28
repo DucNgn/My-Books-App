@@ -1,4 +1,3 @@
-import logging
 import os
 import csv
 
@@ -10,8 +9,6 @@ from backend.core.config import settings
 from backend.db.base import Base
 from backend.db.session import engine
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -51,23 +48,23 @@ def init_db(db: Session) -> None:
 
 
 def instantiate_books(db: Session):
-    # crud.book.remove_all(db)
-
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     with open(os.path.join(__location__, 'books_data.csv'), mode='r', encoding='utf8') as file:
         csvreader = csv.reader(file)
-        counter = 0
+
         for row in csvreader:
-            book_insert = schemas.Book(
-                title=row[0],
-                author=row[1],
-                rating=row[2],
-                description=row[3],
-                isbn=row[4],
-                genre=row[5],
-                num_of_pages=row[6],
-                publisher=row[7],
-                publication_year=row[8],
-                cover_image_url=row[9]
-            )
-            book = crud.book.create(db, obj_in=book_insert)
+            does_book_exist = crud.book.getByTitle(db, title=row[0])
+            if not does_book_exist:
+                book_insert = schemas.Book(
+                    title=row[0],
+                    author=row[1],
+                    rating=row[2],
+                    description=row[3],
+                    isbn=row[4],
+                    genre=row[5],
+                    num_of_pages=row[6],
+                    publisher=row[7],
+                    publication_year=row[8],
+                    cover_image_url=row[9]
+                )
+                book = crud.book.create(db, obj_in=book_insert)
