@@ -8,6 +8,7 @@ import { State } from '../state';
 import {
     commitAddNotification,
     commitRemoveNotification,
+    commitSetBookSearchResults,
     commitSetLoggedIn,
     commitSetLogInError,
     commitSetShelves,
@@ -195,8 +196,18 @@ export const actions = {
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }
-
     },
+    async actionSearchBookByTitle(context: MainContext, payload) {
+        console.log(payload)
+        try {
+            const response = await api.getBookByTitle(context.state.token, payload);
+            if (response.data) {
+                commitSetBookSearchResults(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    }
 };
 
 const { dispatch } = getStoreAccessors<MainState | any, State>('');
@@ -217,4 +228,4 @@ export const dispatchResetPassword = dispatch(actions.resetPassword);
 export const dispatchGetPersonalShelvesAndBooks = dispatch(actions.actionRetrieveShelvesAndBooks);
 export const dispatchUpdateShelves = dispatch(actions.actionUpdateShelves);
 export const dispatchUpdateRecommendations = dispatch(actions.actionUpdateRecommendations);
-
+export const dispatchSearchBooksByTitle = dispatch(actions.actionSearchBookByTitle);

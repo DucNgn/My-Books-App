@@ -38,7 +38,8 @@ def init_db(db: Session) -> None:
             reading_shelf=['1', '2', '3', '4', '5'], 
             toread_shelf=['6', '7', '8', '9', '10'], 
             read_shelf=['11','12','13','14','15'], 
-            favorite_shelf=['1','16']
+            favorite_shelf=['1','16'],
+            recommendation_shelf=[],
         )
         shelves = crud.shelves.create_with_owner(
             db, obj_in=shelves_in, owner_id=int(user.id)

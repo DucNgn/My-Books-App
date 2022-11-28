@@ -19,10 +19,11 @@ class ShelvesCreate(ShelvesBase):
     toread_shelf: List[str]
     read_shelf: List[str]
     favorite_shelf: List[str]
+    recommendation_shelf: List[str]
 
 
 # Properties to receive on item update
-class ShevlesUpdate(ShelvesBase):
+class ShelvesUpdate(ShelvesBase):
     pass
 
 

@@ -11,6 +11,10 @@
           <span v-for="(item, i) in userFavouriteGenres">
             <v-chip :color="`blue lighten-4`" label small>{{ item }}</v-chip>
           </span>
+          <AddBookDialog></AddBookDialog>
+          <v-btn color="primary" dark @click="showAddBookDialog">
+              Add Book
+          </v-btn>
         </div>
       </v-card-text>
     </v-card>
@@ -43,8 +47,11 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { readUserProfile, readPersonalShelves } from '@/store/main/getters';
-import { commitChangeCurrentBook } from '@/store/main/mutations';
 import { dispatchGetPersonalShelvesAndBooks, dispatchUpdateRecommendations } from '@/store/main/actions';
+import { commitChangeCurrentBook, commitIsShowingAddBookDialog } from '@/store/main/mutations';
+import AddBookDialog from './AddBookDialog.vue';
+
+Vue.component('AddBookDialog', AddBookDialog);
 
 @Component
 export default class Dashboard extends Vue {
@@ -70,6 +77,10 @@ export default class Dashboard extends Vue {
 
   public updateRecommendations(){
     dispatchUpdateRecommendations(this.$store);
+  }
+  
+  public showAddBookDialog() {
+    commitIsShowingAddBookDialog(this.$store, true);
   }
 
   get userFavouriteGenres() {
