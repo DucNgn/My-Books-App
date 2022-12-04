@@ -97,6 +97,7 @@ import {
 import {
   commitChangeCurrentBook,
   commitIsShowingAddBookDialog,
+  commitAddNotification,
 } from '@/store/main/mutations';
 
 import AddBookDialog from './AddBookDialog.vue';
