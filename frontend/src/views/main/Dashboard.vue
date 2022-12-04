@@ -60,6 +60,7 @@ Vue.component('AddBookDialog', AddBookDialog);
 export default class Dashboard extends Vue {
   public async created() {
     await dispatchGetPersonalShelvesAndBooks(this.$store);
+    await dispatchUpdateRecommendations(this.$store);
   }
 
   get greetedUser() {
