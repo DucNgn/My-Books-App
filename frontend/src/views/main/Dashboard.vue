@@ -50,7 +50,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { readUserProfile, readPersonalShelves } from '@/store/main/getters';
-import { dispatchGetPersonalShelvesAndBooks, dispatchUpdateRecommendations } from '@/store/main/actions';
+import { dispatchGetPersonalShelvesAndBooks, dispatchUpdateRecommendations, dispatchUpdateRecommendationsSilent } from '@/store/main/actions';
 import { commitChangeCurrentBook, commitIsShowingAddBookDialog } from '@/store/main/mutations';
 import AddBookDialog from './AddBookDialog.vue';
 
@@ -60,6 +60,7 @@ Vue.component('AddBookDialog', AddBookDialog);
 export default class Dashboard extends Vue {
   public async created() {
     await dispatchGetPersonalShelvesAndBooks(this.$store);
+    await dispatchUpdateRecommendationsSilent(this.$store);
   }
 
   get greetedUser() {
