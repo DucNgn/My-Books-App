@@ -51,12 +51,33 @@
         class="elevation-1"
       >
         <template v-slot:items="props">
-          <tr v-on:click="clickRow(props.item)">
+          <tr
+            v-on:click="clickRow(props.item)"
+            @dragstart="startDrag($event, props.item, shelf)"
+            v-bind:draggable="true"
+            :id="props.item.title + '\%/\%' + props.item.isbn"
+            @dragover.stop
+          >
             <td>{{ props.item.title }}</td>
             <td>{{ props.item.author }}</td>
             <td>{{ props.item.genre }}</td>
             <td>{{ props.item.rating }}</td>
             <td>{{ props.item.num_of_pages }}</td>
+            <td style="pointer-events: none">
+              <button
+                style="pointer-events: auto"
+                v-on:click="
+                  (e) =>
+                    favoriteClick(e, shelf, props.item, props.item.isFavorite)
+                "
+              >
+                <font-awesome-icon
+                  v-if="props.item.isFavorite"
+                  icon="fa-solid fa-heart"
+                />
+                <font-awesome-icon v-else icon="fa-regular fa-heart" />
+              </button>
+            </td>
           </tr>
         </template>
       </v-data-table>
@@ -67,14 +88,27 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { readUserProfile, readPersonalShelves } from '@/store/main/getters';
-import { dispatchGetPersonalShelvesAndBooks, dispatchUpdateRecommendations, dispatchUpdateRecommendationsSilent } from '@/store/main/actions';
-import { commitChangeCurrentBook, commitIsShowingAddBookDialog } from '@/store/main/mutations';
+import {
+  dispatchGetPersonalShelvesAndBooks,
+  dispatchUpdateRecommendations,
+  dispatchUpdateShelves,
+  dispatchUpdateRecommendationsSilent,
+} from '@/store/main/actions';
+import {
+  commitChangeCurrentBook,
+  commitIsShowingAddBookDialog,
+} from '@/store/main/mutations';
+
 import AddBookDialog from './AddBookDialog.vue';
 
 Vue.component('AddBookDialog', AddBookDialog);
 
 @Component
 export default class Dashboard extends Vue {
+  draggingBook;
+  originShelf;
+  favoriteShelf;
+
   public async created() {
     await dispatchGetPersonalShelvesAndBooks(this.$store);
     await dispatchUpdateRecommendationsSilent(this.$store);
@@ -89,6 +123,74 @@ export default class Dashboard extends Vue {
         return userProfile.email;
       }
     }
+  }
+
+  public favoriteClick(e, fromShelf, book, inFavorites) {
+    e.stopPropagation();
+
+    let data = {};
+    console.log(this.favoriteShelf);
+    let newFavoritesIDs = this.getBookIds(
+      this.favoriteShelf,
+      book,
+      !inFavorites
+    );
+    console.log('pass');
+    data[this.favoriteShelf.api_name] = newFavoritesIDs;
+
+    if (fromShelf.api_name == 'recommendation_shelf') {
+      let newRecommendedIDs = this.getBookIds(fromShelf, book, false);
+      data[fromShelf.api_name] = newRecommendedIDs;
+    }
+    console.log(data);
+    dispatchUpdateShelves(this.$store, data);
+  }
+
+  public startDrag(event, book, shelf) {
+    this.draggingBook = book;
+    this.originShelf = shelf;
+  }
+
+  public getBookIds(shelf, book, addBook) {
+    let newdestinationShelfBookIDs: string[] = [];
+    shelf.books.forEach((b) => {
+      if (addBook || book != b) newdestinationShelfBookIDs.push(b.id);
+    });
+    if (addBook) newdestinationShelfBookIDs.push(book.id);
+    return newdestinationShelfBookIDs;
+  }
+
+  public onDrop(event, destinationShelfBooks) {
+    if (this.validDrop(destinationShelfBooks)) {
+      let data = {};
+
+      if (
+        this.originShelf.api_name != 'recommendation_shelf' &&
+        this.originShelf.api_name != 'favorite_shelf' &&
+        destinationShelfBooks.api_name != 'favorite_shelf'
+      ) {
+        let newOriginShelfBookIDs = this.getBookIds(
+          this.originShelf,
+          this.draggingBook,
+          false
+        );
+        data[this.originShelf.api_name] = newOriginShelfBookIDs;
+      }
+      let newdestinationShelfBookIDs = this.getBookIds(
+        destinationShelfBooks,
+        this.draggingBook,
+        true
+      );
+
+      (data[destinationShelfBooks.api_name] = newdestinationShelfBookIDs),
+        dispatchUpdateShelves(this.$store, data);
+    }
+    this.draggingBook = null;
+    this.originShelf = '';
+  }
+
+  private validDrop(shelf) {
+    return shelf != this.originShelf;
   }
 
   public clickRow(book) {
@@ -114,6 +216,26 @@ export default class Dashboard extends Vue {
     return [];
   }
 
+  public updateFavoritesInShelf(shelf, set) {
+    shelf.forEach(
+      (book, index) => (shelf[index].isFavorite = set.has(book.id))
+    );
+  }
+
+  public updateFavorites(personalShelvesData) {
+    if (personalShelvesData == null) return;
+    console.log(personalShelvesData);
+    let set = new Set();
+    personalShelvesData?.favorite_shelf.forEach((book, index) => {
+      personalShelvesData!.favorite_shelf[index].isFavorite = true;
+      set.add(book.id);
+    });
+
+    this.updateFavoritesInShelf(personalShelvesData?.read_shelf, set);
+    this.updateFavoritesInShelf(personalShelvesData?.reading_shelf, set);
+    this.updateFavoritesInShelf(personalShelvesData?.toread_shelf, set);
+  }
+
   get getShelvesAndBooks() {
     const personalShelvesData = readPersonalShelves(this.$store);
     const sharedHeaders = [
@@ -122,29 +244,39 @@ export default class Dashboard extends Vue {
       { text: 'Genre', value: 'genre' },
       { text: 'Rating', value: 'rating' },
       { text: 'Number of pages', value: 'num_of_pages' },
+      { text: 'Favorite', value: 'isFavorite' },
     ];
+
+    this.updateFavorites(personalShelvesData);
+
     const formattedData = {
       'To Read': {
         headers: sharedHeaders,
         books: personalShelvesData?.toread_shelf,
+        api_name: 'toread_shelf',
       },
       Reading: {
         headers: sharedHeaders,
         books: personalShelvesData?.reading_shelf,
+        api_name: 'reading_shelf',
       },
       Read: {
         headers: sharedHeaders,
         books: personalShelvesData?.read_shelf,
+        api_name: 'read_shelf',
       },
       Favourites: {
         headers: sharedHeaders,
         books: personalShelvesData?.favorite_shelf,
+        api_name: 'favorite_shelf',
       },
       Recommendations: {
         headers: sharedHeaders,
         books: personalShelvesData?.recommendation_shelf,
+        api_name: 'recommendation_shelf',
       },
     };
+    this.favoriteShelf = formattedData.Favourites;
     return formattedData;
   }
 }
