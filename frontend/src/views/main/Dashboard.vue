@@ -108,7 +108,7 @@ Vue.component('AddBookDialog', AddBookDialog);
 export default class Dashboard extends Vue {
   draggingBook;
   originShelf;
-  favoriteShelf;
+  formattedData;
 
   public async created() {
     await dispatchGetPersonalShelvesAndBooks(this.$store);
@@ -128,22 +128,17 @@ export default class Dashboard extends Vue {
 
   public favoriteClick(e, fromShelf, book, inFavorites) {
     e.stopPropagation();
+    const favoriteShelf = this.formattedData.Favourites;
 
     let data = {};
-    console.log(this.favoriteShelf);
-    let newFavoritesIDs = this.getBookIds(
-      this.favoriteShelf,
-      book,
-      !inFavorites
-    );
-    console.log('pass');
-    data[this.favoriteShelf.api_name] = newFavoritesIDs;
+    let newFavoritesIDs = this.getBookIds(favoriteShelf, book, !inFavorites);
+
+    data[favoriteShelf.api_name] = newFavoritesIDs;
 
     if (fromShelf.api_name == 'recommendation_shelf') {
       let newRecommendedIDs = this.getBookIds(fromShelf, book, false);
       data[fromShelf.api_name] = newRecommendedIDs;
     }
-    console.log(data);
     dispatchUpdateShelves(this.$store, data);
   }
 
@@ -164,11 +159,35 @@ export default class Dashboard extends Vue {
   public onDrop(event, destinationShelfBooks) {
     if (this.validDrop(destinationShelfBooks)) {
       let data = {};
+      if (this.originShelf.api_name == 'favorite_shelf') {
+        let otherShelves = new Array();
+        const formattedData = this.formattedData;
 
-      if (
+        if (destinationShelfBooks != formattedData.Reading)
+          otherShelves.push(formattedData.Reading);
+        if (destinationShelfBooks != formattedData['To Read'])
+          otherShelves.push(formattedData['To Read']);
+        if (destinationShelfBooks != formattedData.Read)
+          otherShelves.push(this.formattedData.Read);
+
+        let possibleShelf: any | null = null;
+        otherShelves.forEach((shelf) => {
+          shelf.books.forEach((book) => {
+            if (book.id == this.draggingBook.id) possibleShelf = shelf;
+          });
+        });
+
+        if (possibleShelf != null) {
+          let newOriginShelfBookIDs = this.getBookIds(
+            possibleShelf,
+            this.draggingBook,
+            false
+          );
+          data[possibleShelf.api_name] = newOriginShelfBookIDs;
+        }
+      } else if (
         this.originShelf.api_name == 'recommendation_shelf' ||
-        (this.originShelf.api_name != 'favorite_shelf' &&
-          destinationShelfBooks.api_name != 'favorite_shelf')
+        destinationShelfBooks.api_name != 'favorite_shelf'
       ) {
         let newOriginShelfBookIDs = this.getBookIds(
           this.originShelf,
@@ -235,7 +254,6 @@ export default class Dashboard extends Vue {
 
   public updateFavorites(personalShelvesData) {
     if (personalShelvesData == null) return;
-    console.log(personalShelvesData);
     let set = new Set();
     personalShelvesData?.favorite_shelf.forEach((book, index) => {
       personalShelvesData!.favorite_shelf[index].isFavorite = true;
@@ -292,7 +310,7 @@ export default class Dashboard extends Vue {
         title: 'Recommendations',
       },
     };
-    this.favoriteShelf = formattedData.Favourites;
+    this.formattedData = formattedData;
     return formattedData;
   }
 }
