@@ -7,9 +7,18 @@
                 </div>
             </v-card-title>
             <v-card-text>
-                <div class="text-center">
-                    <v-img :src=coverPageUrl max-height="400" max-width="250" justify="center"></v-img>
-                </div>
+                <v-container>
+                    <div class="d-flex justify-center ma-4"> 
+                        <v-img :src=coverPageUrl max-height="400" contain max-width="250" justify="center" class="ml-auto"></v-img>               
+                        <div style="display:inline-block;width: 50%; margin-left: 25px;padding:10px;">
+                            <h2>Description</h2>
+                            <p>{{ bookDescription }}</p>
+                        </div>
+                        
+                    </div>
+
+                </v-container>
+
                 <br />
                 <v-divider></v-divider>
                 <v-expansion-panel>
@@ -23,6 +32,9 @@
                                     <li><strong>Author:</strong> {{ bookAuthor }}</li>
                                     <li><strong>Genre:</strong> {{ bookGenre }}</li>
                                     <li><strong>ISBN:</strong> {{ bookISBN }}</li>
+                                    <li><strong>Rating:</strong> {{ bookRating }}</li>
+                                    <li><strong>Publisher:</strong> {{ bookPublisher }}</li>
+                                    <li><strong>Date Published:</strong> {{ bookPublicationYear }}</li>
                                     <li><strong>Number of pages:</strong> {{ bookNumOfPages }}</li>
                                 </ul>
                             </v-card-text>
@@ -58,6 +70,22 @@ export default class Main extends Vue {
 
     get bookAuthor() {
         return this.bookData?.author;
+    }
+    
+    get bookRating() {
+        return this.bookData?.rating;
+    }
+    
+    get bookDescription() {
+        return this.bookData?.description;
+    }
+    
+    get bookPublisher() {
+        return this.bookData?.publisher;
+    }
+    
+    get bookPublicationYear() {
+        return this.bookData?.publication_year;
     }
 
     get bookGenre() {

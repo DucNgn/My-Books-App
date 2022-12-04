@@ -25,12 +25,18 @@
 - `pip install -r requirements.txt` to install the dependencies.
   
 
-- *Optional*: 
-    Run: ```./prestart.sh```
+3. Run: ```./prestart.sh```
   to populate initialize some data to the database.
   If you get permission error when executing this command, run `chmod +x ./prestart.sh` to add execution permission to the file. The first admin will have the following login info:
+  - Admin user:
     + email: `user@user.user`
     + password: `password`
+  - Test user 1:
+    + email: `william.arbour@gmail.com`
+    + password: `costion`
+  - Test user 2:
+    + email: `ana.miranda@gmail.com`
+    + password: `teranda`
 
 - ```bash -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000"``` : To start the back-end.
 

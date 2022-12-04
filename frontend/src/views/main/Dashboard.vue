@@ -11,6 +11,9 @@
           <span v-for="(item, i) in userFavouriteGenres">
             <v-chip :color="`blue lighten-4`" label small>{{ item }}</v-chip>
           </span>
+          <v-btn dark color="primary" to="/main/profile/edit">
+              Edit Preferences
+          </v-btn>
           <AddBookDialog></AddBookDialog>
           <v-btn color="primary" dark @click="showAddBookDialog">
               Add Book
@@ -21,6 +24,12 @@
     <v-card v-for="(shelf, shelfName) in getShelvesAndBooks" class="ma-3 pa-3">
       <v-card-title primary-title>
         <div class="headline .text-h4">{{ shelfName }}</div>
+        
+        <v-btn v-if="shelfName === 'Recommendations'" v-on:click="updateRecommendations" 
+              class="mx-2" fab dark small color="pink">
+            <v-icon dark>refresh</v-icon>
+        </v-btn>
+      
       </v-card-title>
       <v-data-table :headers="shelf.headers" :items="shelf.books" class="elevation-1">
         <template v-slot:items="props">
@@ -28,7 +37,7 @@
             <td>{{ props.item.title }}</td>
             <td>{{ props.item.author }}</td>
             <td>{{ props.item.genre }}</td>
-            <td>{{ props.item.isbn }}</td>
+            <td>{{ props.item.rating }}</td>
             <td>{{ props.item.num_of_pages }}</td>
           </tr>
         </template>
@@ -37,11 +46,12 @@
   </v-container>
 </template>
 
+
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { readUserProfile, readPersonalShelves } from '@/store/main/getters';
+import { dispatchGetPersonalShelvesAndBooks, dispatchUpdateRecommendations } from '@/store/main/actions';
 import { commitChangeCurrentBook, commitIsShowingAddBookDialog } from '@/store/main/mutations';
-import { dispatchGetPersonalShelvesAndBooks } from '@/store/main/actions';
 import AddBookDialog from './AddBookDialog.vue';
 
 Vue.component('AddBookDialog', AddBookDialog);
@@ -68,6 +78,10 @@ export default class Dashboard extends Vue {
     this.$router.push({ name: 'bookDetails' });
   }
 
+  public updateRecommendations(){
+    dispatchUpdateRecommendations(this.$store);
+  }
+  
   public showAddBookDialog() {
     commitIsShowingAddBookDialog(this.$store, true);
   }
@@ -88,7 +102,7 @@ export default class Dashboard extends Vue {
       { text: 'Title', value: 'title', align: 'left' },
       { text: 'Author', value: 'author' },
       { text: 'Genre', value: 'genre' },
-      { text: 'ISBN', value: 'isbn' },
+      { text: 'Rating', value: 'rating' },
       { text: 'Number of pages', value: 'num_of_pages' },
     ];
     const formattedData = {
@@ -104,11 +118,11 @@ export default class Dashboard extends Vue {
         headers: sharedHeaders,
         books: personalShelvesData?.read_shelf,
       },
-      'Favourite': {
+      'Favourites': {
         headers: sharedHeaders,
         books: personalShelvesData?.favorite_shelf,
       },
-      'Recommendation': {
+      'Recommendations': {
         headers: sharedHeaders,
         books: personalShelvesData?.recommendation_shelf,
       },
