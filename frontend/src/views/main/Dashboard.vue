@@ -154,7 +154,7 @@ export default class Dashboard extends Vue {
   public getBookIds(shelf, book, addBook) {
     let newdestinationShelfBookIDs: string[] = [];
     shelf.books.forEach((b) => {
-      if (addBook || book != b) newdestinationShelfBookIDs.push(b.id);
+      if (addBook || book.id != b.id) newdestinationShelfBookIDs.push(b.id);
     });
     if (addBook) newdestinationShelfBookIDs.push(book.id);
     return newdestinationShelfBookIDs;
