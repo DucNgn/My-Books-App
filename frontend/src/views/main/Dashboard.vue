@@ -12,26 +12,44 @@
             <v-chip :color="`blue lighten-4`" label small>{{ item }}</v-chip>
           </span>
           <v-btn dark color="primary" to="/main/profile/edit">
-              Edit Preferences
+            Edit Preferences
           </v-btn>
+
           <AddBookDialog></AddBookDialog>
           <v-btn color="primary" dark @click="showAddBookDialog">
-              Add Book
+            Add Book
           </v-btn>
         </div>
       </v-card-text>
     </v-card>
-    <v-card v-for="(shelf, shelfName) in getShelvesAndBooks" class="ma-3 pa-3">
+    <v-card
+      v-for="(shelf, shelfName) in getShelvesAndBooks"
+      class="ma-3 pa-3"
+      v-on:drop.prevent="(e) => onDrop(e, shelf)"
+      :ondragover="
+        shelfName === 'Recommendations' ? 'return true' : 'return false'
+      "
+    >
       <v-card-title primary-title>
         <div class="headline .text-h4">{{ shelfName }}</div>
-        
-        <v-btn v-if="shelfName === 'Recommendations'" v-on:click="updateRecommendations" 
-              class="mx-2" fab dark small color="pink">
-            <v-icon dark>refresh</v-icon>
+
+        <v-btn
+          v-if="shelfName === 'Recommendations'"
+          v-on:click="updateRecommendations"
+          class="mx-2"
+          fab
+          dark
+          small
+          color="pink"
+        >
+          <v-icon dark>refresh</v-icon>
         </v-btn>
-      
       </v-card-title>
-      <v-data-table :headers="shelf.headers" :items="shelf.books" class="elevation-1">
+      <v-data-table
+        :headers="shelf.headers"
+        :items="shelf.books"
+        class="elevation-1"
+      >
         <template v-slot:items="props">
           <tr v-on:click="clickRow(props.item)">
             <td>{{ props.item.title }}</td>
@@ -45,7 +63,6 @@
     </v-card>
   </v-container>
 </template>
-
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
@@ -79,10 +96,10 @@ export default class Dashboard extends Vue {
     this.$router.push({ name: 'bookDetails' });
   }
 
-  public updateRecommendations(){
+  public updateRecommendations() {
     dispatchUpdateRecommendations(this.$store);
   }
-  
+
   public showAddBookDialog() {
     commitIsShowingAddBookDialog(this.$store, true);
   }
@@ -111,19 +128,19 @@ export default class Dashboard extends Vue {
         headers: sharedHeaders,
         books: personalShelvesData?.toread_shelf,
       },
-      'Reading': {
+      Reading: {
         headers: sharedHeaders,
         books: personalShelvesData?.reading_shelf,
       },
-      'Read': {
+      Read: {
         headers: sharedHeaders,
         books: personalShelvesData?.read_shelf,
       },
-      'Favourites': {
+      Favourites: {
         headers: sharedHeaders,
         books: personalShelvesData?.favorite_shelf,
       },
-      'Recommendations': {
+      Recommendations: {
         headers: sharedHeaders,
         books: personalShelvesData?.recommendation_shelf,
       },
