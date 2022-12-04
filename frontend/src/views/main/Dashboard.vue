@@ -165,9 +165,9 @@ export default class Dashboard extends Vue {
       let data = {};
 
       if (
-        this.originShelf.api_name != 'recommendation_shelf' &&
-        this.originShelf.api_name != 'favorite_shelf' &&
-        destinationShelfBooks.api_name != 'favorite_shelf'
+        this.originShelf.api_name == 'recommendation_shelf' ||
+        (this.originShelf.api_name != 'favorite_shelf' &&
+          destinationShelfBooks.api_name != 'favorite_shelf')
       ) {
         let newOriginShelfBookIDs = this.getBookIds(
           this.originShelf,
