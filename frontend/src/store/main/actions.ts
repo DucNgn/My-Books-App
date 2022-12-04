@@ -197,6 +197,17 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionUpdateRecommendationsSilent(context: MainContext) {
+        try {
+            const response = (await Promise.all([
+                api.updateRecommendations(context.state.token),
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            await dispatchGetPersonalShelvesAndBooks(context);
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
     async actionSearchBookByTitle(context: MainContext, payload) {
         console.log(payload)
         try {
@@ -228,4 +239,5 @@ export const dispatchResetPassword = dispatch(actions.resetPassword);
 export const dispatchGetPersonalShelvesAndBooks = dispatch(actions.actionRetrieveShelvesAndBooks);
 export const dispatchUpdateShelves = dispatch(actions.actionUpdateShelves);
 export const dispatchUpdateRecommendations = dispatch(actions.actionUpdateRecommendations);
+export const dispatchUpdateRecommendationsSilent = dispatch(actions.actionUpdateRecommendationsSilent);
 export const dispatchSearchBooksByTitle = dispatch(actions.actionSearchBookByTitle);
