@@ -11,6 +11,9 @@
           <span v-for="(item, i) in userFavouriteGenres">
             <v-chip :color="`blue lighten-4`" label small>{{ item }}</v-chip>
           </span>
+          <v-btn dark color="primary" to="/main/profile/edit">
+              Edit Preferences
+          </v-btn>
           <AddBookDialog></AddBookDialog>
           <v-btn color="primary" dark @click="showAddBookDialog">
               Add Book
@@ -22,7 +25,7 @@
       <v-card-title primary-title>
         <div class="headline .text-h4">{{ shelfName }}</div>
         
-        <v-btn v-if="shelfName === 'Recommendations'" v-on:click="updateRecommendations()" 
+        <v-btn v-if="shelfName === 'Recommendations'" v-on:click="updateRecommendations" 
               class="mx-2" fab dark small color="pink">
             <v-icon dark>refresh</v-icon>
         </v-btn>

@@ -13,6 +13,7 @@ export interface IUserProfileUpdate {
     password?: string;
     is_active?: boolean;
     is_superuser?: boolean;
+    favorite_genres?: string[];
 }
 
 export interface IUserProfileCreate {
