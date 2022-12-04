@@ -190,7 +190,17 @@ export default class Dashboard extends Vue {
   }
 
   private validDrop(shelf) {
-    return shelf != this.originShelf;
+    if (shelf == this.originShelf) return false;
+    for (const book of shelf.books) {
+      if (book.id == this.draggingBook.id) {
+        commitAddNotification(this.$store, {
+          content: '"' + book.title + '" already exists in ' + shelf.title,
+          color: 'error',
+        });
+        return false;
+      }
+    }
+    return true;
   }
 
   public clickRow(book) {
