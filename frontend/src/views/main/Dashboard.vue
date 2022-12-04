@@ -254,26 +254,31 @@ export default class Dashboard extends Vue {
         headers: sharedHeaders,
         books: personalShelvesData?.toread_shelf,
         api_name: 'toread_shelf',
+        title: 'To Read',
       },
       Reading: {
         headers: sharedHeaders,
         books: personalShelvesData?.reading_shelf,
         api_name: 'reading_shelf',
+        title: 'Reading',
       },
       Read: {
         headers: sharedHeaders,
         books: personalShelvesData?.read_shelf,
         api_name: 'read_shelf',
+        title: 'Read',
       },
       Favourites: {
         headers: sharedHeaders,
         books: personalShelvesData?.favorite_shelf,
         api_name: 'favorite_shelf',
+        title: 'Favourites',
       },
       Recommendations: {
         headers: sharedHeaders,
         books: personalShelvesData?.recommendation_shelf,
         api_name: 'recommendation_shelf',
+        title: 'Recommendations',
       },
     };
     this.favoriteShelf = formattedData.Favourites;
