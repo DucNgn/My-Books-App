@@ -45,7 +45,4 @@ def compare_books(book1, book2) -> bool:
 
 
 def book_in_list(list_books, target) -> bool:
-    for book in list_books:
-        if compare_books(book, target):
-            return True
-    return False
+    return any(compare_books(book, target) for book in list_books)
