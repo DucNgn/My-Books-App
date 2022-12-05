@@ -42,3 +42,7 @@ def compare_books(book1, book2) -> bool:
     if book1.num_of_pages != book2.num_of_pages:
         return False
     return True
+
+
+def book_in_list(list_books, target) -> bool:
+    return any(compare_books(book, target) for book in list_books)
