@@ -16,11 +16,11 @@ services:
     depends_on:
       - db
     env_file:
-      - ./backend/.env
+      - ./backend/.docker.env
     build:
       context: ./backend
       dockerfile: backend.dockerfile
-    command: bash -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+    command: bash -c "poetry run python /backend/backend/initial_data.py && uvicorn backend.main:app --host 0.0.0.0 --port 8000"
     ports:
       - 8000:8000
 
@@ -30,4 +30,7 @@ services:
     build:
       context: ./frontend
       dockerfile: frontend.dockerfile
-
+    command: npm run serve
+    ports:
+      - 8080:8080
+    
