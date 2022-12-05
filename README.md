@@ -58,7 +58,8 @@ In addition, localhost:8000/docs has the swagger ui for the back-end API.
 By default, front-end starts at localhost:8080.
 
 # With Docker 🐳
-- (coming soon)
+- `docker-compose up`: To start all the containers.
+- `docker-compose up --build`: To rebuild if there's any changes.
 
 # During Development:
 - `make lint-backend`: to run linter through all backend code (all dependencies needed to be installed inside `./venv`)
