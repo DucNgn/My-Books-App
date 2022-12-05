@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -24,6 +24,9 @@ class CRUDBook(CRUDBase[Book, BookCreate, BookUpdate]):
         recommended_book_ids = [book.id for book in recommended_books]
         return recommended_book_ids
 
+    def getByTitle(self, db: Session, title: str) -> Optional[Book]:
+        return db.query(self.model).filter(self.model.title == title).first()
+
     def search_by_title(self, db: Session, title: str):
         """
         Get Book by title, case insensitive.
@@ -34,7 +37,7 @@ class CRUDBook(CRUDBase[Book, BookCreate, BookUpdate]):
         return book_result
 
     def search_by_title_exclude_ids(
-        self, db: Session, title: str, exclude_ids: List[int] = []
+            self, db: Session, title: str, exclude_ids: List[int] = []
     ):
         """
         Get Book by title, case insensitive, exclude all books with id in exclude_ids
