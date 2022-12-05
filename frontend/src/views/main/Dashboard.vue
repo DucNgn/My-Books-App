@@ -49,14 +49,15 @@
         :headers="shelf.headers"
         :items="shelf.books"
         class="elevation-1"
+        v-on:drop.prevent="(e) => onDrop(e, shelf)"
       >
         <template v-slot:items="props">
           <tr
             v-on:click="clickRow(props.item)"
             @dragstart="startDrag($event, props.item, shelf)"
+            v-on:drop.prevent="(e) => onDrop(e, shelf)"
             v-bind:draggable="true"
             :id="props.item.title + '\%/\%' + props.item.isbn"
-            @dragover.stop
           >
             <td>{{ props.item.title }}</td>
             <td>{{ props.item.author }}</td>
