@@ -27,8 +27,12 @@ def init_db(db: Session) -> None:
 
 
 def instantiate_books(db: Session):
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    with open(os.path.join(__location__, 'books_data.csv'), mode='r', encoding='utf8') as file:
+    __location__ = os.path.realpath(
+        os.path.join(os.getcwd(), os.path.dirname(__file__))
+    )
+    with open(
+        os.path.join(__location__, "books_data.csv"), mode="r", encoding="utf8"
+    ) as file:
         csvreader = csv.reader(file)
 
         for row in csvreader:
@@ -44,9 +48,10 @@ def instantiate_books(db: Session):
                     num_of_pages=row[6],
                     publisher=row[7],
                     publication_year=row[8],
-                    cover_image_url=row[9]
+                    cover_image_url=row[9],
                 )
                 book = crud.book.create(db, obj_in=book_insert)
+
 
 def instantiate_users(db: Session):
     user1 = crud.user.get_by_email(db, email=settings.FIRST_SUPERUSER)
@@ -86,23 +91,23 @@ def instantiate_shelves(db: Session):
     shelves1 = crud.shelves.get_by_owner_id(db, owner_id=1)
     if not shelves1:
         shelves_in = schemas.ShelvesCreate(
-            reading_shelf=['1', '2', '3', '4', '5', '20', '100'], 
-            toread_shelf=['6', '7', '8', '9', '10'], 
-            read_shelf=['11','12','13','14','15'], 
-            favorite_shelf=['12','13'],
+            reading_shelf=["1", "2", "3", "4", "5", "20", "100"],
+            toread_shelf=["6", "7", "8", "9", "10"],
+            read_shelf=["11", "12", "13", "14", "15"],
+            favorite_shelf=["12", "13"],
             recommendation_shelf=[],
         )
         shelves1 = crud.shelves.create_with_owner(
             db, obj_in=shelves_in, owner_id=int(1)
         )
-    # USER ID 2 
+    # USER ID 2
     shelves2 = crud.shelves.get_by_owner_id(db, owner_id=2)
     if not shelves2:
         shelves_in = schemas.ShelvesCreate(
-            reading_shelf=['16', '17', '18'], 
-            toread_shelf=['20'], 
-            read_shelf=['19','21','22','23','24', '25','26','27'], 
-            favorite_shelf=['22','23','24'],
+            reading_shelf=["16", "17", "18"],
+            toread_shelf=["20"],
+            read_shelf=["19", "21", "22", "23", "24", "25", "26", "27"],
+            favorite_shelf=["22", "23", "24"],
             recommendation_shelf=[],
         )
         shelves2 = crud.shelves.create_with_owner(
@@ -111,10 +116,10 @@ def instantiate_shelves(db: Session):
     shelves2 = crud.shelves.get_by_owner_id(db, owner_id=3)
     if not shelves2:
         shelves_in = schemas.ShelvesCreate(
-            reading_shelf=['107', '108'], 
-            toread_shelf=['100','121','122','123','124','125','127'], 
-            read_shelf=['126','27'], 
-            favorite_shelf=['126','27'],
+            reading_shelf=["107", "108"],
+            toread_shelf=["100", "121", "122", "123", "124", "125", "127"],
+            read_shelf=["126", "27"],
+            favorite_shelf=["126", "27"],
             recommendation_shelf=[],
         )
         shelves2 = crud.shelves.create_with_owner(

@@ -42,7 +42,7 @@ def test_create_optional_parameters(db) -> None:
         genre="test_genre",
         isbn="123123",
         publication_year="2022",
-        num_of_pages=17
+        num_of_pages=17,
     )
     # Do work
     created = crud.book.create(db, obj_in=test_book)
@@ -78,7 +78,9 @@ def test_get_multi(db) -> None:
     # Do Work
     # Skip the first 100 books since the books we added aren't there
     retrieved = crud.book.get_multi(db, skip=100)
-    pertinent = book_util.filter_pertinent_ids(retrieved, [base_book.id, optional_book.id])
+    pertinent = book_util.filter_pertinent_ids(
+        retrieved, [base_book.id, optional_book.id]
+    )
     # Assert
     # if we did not add any other books by startup script, should only have 3 books in db
     # Length is 77 because we started up db with 175, -100 for skip, +2 for created by tests books
@@ -118,7 +120,9 @@ def test_retrieve_suggestions(db) -> None:
     list_genres = ["test1", "test2", "test3", "test4"]
     list_id = book_util.populate_books(db, list_genres)
     # Do Work
-    list_recommended_id = crud.book.get_suggestions(db, favorite_genres=[list_genres[0], list_genres[2]])
+    list_recommended_id = crud.book.get_suggestions(
+        db, favorite_genres=[list_genres[0], list_genres[2]]
+    )
     # Assert
     # if we did not add any other books by startup script, should only have 10 relevant books in db
     assert len(list_recommended_id) == 10
@@ -154,18 +158,24 @@ def test_search_by_title(db) -> None:
 
 # this method is used for us to exclude books already in the bookshelves
 def test_search_by_title_exclude_ids(db) -> None:
-    success_retrieved = crud.book.search_by_title_exclude_ids(db, "changed", [base_book.id])
+    success_retrieved = crud.book.search_by_title_exclude_ids(
+        db, "changed", [base_book.id]
+    )
     # getByTitle uses fuzzy searches
     success_fuzzy_retrieve = crud.book.search_by_title_exclude_ids(db, "chang", [])
     # Test on multiple
     to_exclude1 = crud.book.getByTitle(db, "Harry Potter and the Order of the Phoenix")
     to_exclude2 = crud.book.getByTitle(db, "Harry Potter and the Deathly Hallows")
-    harry = crud.book.search_by_title_exclude_ids(db, "harr", [to_exclude1.id, to_exclude2.id])
+    harry = crud.book.search_by_title_exclude_ids(
+        db, "harr", [to_exclude1.id, to_exclude2.id]
+    )
     # Assert
     assert len(success_retrieved) == 0
     assert success_retrieved == []
     assert len(success_fuzzy_retrieve) == 1
     assert book_util.compare_books(success_fuzzy_retrieve[0], base_book)
-    assert len(harry) == 4  # There are 6 harry potter books in our start-up db, 2 excluded
+    assert (
+        len(harry) == 4
+    )  # There are 6 harry potter books in our start-up db, 2 excluded
     assert book_util.book_in_list(harry, to_exclude1) is False
     assert book_util.book_in_list(harry, to_exclude2) is False

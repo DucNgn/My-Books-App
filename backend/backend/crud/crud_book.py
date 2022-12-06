@@ -37,7 +37,7 @@ class CRUDBook(CRUDBase[Book, BookCreate, BookUpdate]):
         return book_result
 
     def search_by_title_exclude_ids(
-            self, db: Session, title: str, exclude_ids: List[int] = []
+        self, db: Session, title: str, exclude_ids: List[int] = []
     ):
         """
         Get Book by title, case insensitive, exclude all books with id in exclude_ids

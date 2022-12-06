@@ -79,13 +79,20 @@ def update_recommendations_shelf(
     shelves_in = schemas.ShelvesUpdate(**current_shelves)
 
     recommended_book_ids = crud.book.get_suggestions(
-        db=db, favorite_genres=current_user.favorite_genres 
+        db=db, favorite_genres=current_user.favorite_genres
     )
 
-    # Remove duplicates 
-    used_book_ids = shelves_in.toread_shelf + shelves_in.reading_shelf + shelves_in.read_shelf + shelves_in.favorite_shelf
-    recommended_book_ids = [new_id for new_id in recommended_book_ids if str(new_id) not in used_book_ids]
-    
+    # Remove duplicates
+    used_book_ids = (
+        shelves_in.toread_shelf
+        + shelves_in.reading_shelf
+        + shelves_in.read_shelf
+        + shelves_in.favorite_shelf
+    )
+    recommended_book_ids = [
+        new_id for new_id in recommended_book_ids if str(new_id) not in used_book_ids
+    ]
+
     shelves_in.recommendation_shelf = recommended_book_ids
     shelves = crud.shelves.update(db, db_obj=shelves, obj_in=shelves_in)
     return shelves

@@ -41,7 +41,7 @@ def test_create_optional_parameters(db) -> None:
         password=test_password,
         full_name="John Doe",
         is_superuser=True,
-        favorite_genres=["fantasy", "comedy"]
+        favorite_genres=["fantasy", "comedy"],
     )
     # Do Work
     global optional_test_user
@@ -78,7 +78,9 @@ def test_get_by_email(db) -> None:
 def test_get_multi(db) -> None:
     # Do Work
     retrieved = crud.user.get_multi(db)
-    pertinent = user_util.filter_pertinent_ids(retrieved, [test_user.id, optional_test_user.id])
+    pertinent = user_util.filter_pertinent_ids(
+        retrieved, [test_user.id, optional_test_user.id]
+    )
     # Assert
     # Can't actually assert length of all users since we create users in test crud_shelf
     # retrieved is for sure > pertinent though because of default user
@@ -93,7 +95,7 @@ def test_update(db) -> None:
         email="changed@email.com",
         password="changed1",
         full_name="John Doe",
-        favorite_genres=["fantasy", "comedy", "horror"]
+        favorite_genres=["fantasy", "comedy", "horror"],
     )
     # Do Work
     crud.user.update(to_update_session, db_obj=test_user, obj_in=to_update_with)
@@ -108,7 +110,9 @@ def test_update(db) -> None:
 
 def test_authenticate(db) -> None:
     # Do Work
-    retrieved = crud.user.authenticate(db, email=test_user.email, password=test_password)
+    retrieved = crud.user.authenticate(
+        db, email=test_user.email, password=test_password
+    )
     # Assert
     assert user_util.compare_user(retrieved, test_user)
 

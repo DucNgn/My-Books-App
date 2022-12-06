@@ -107,14 +107,6 @@ Vue.component('AddBookDialog', AddBookDialog);
 
 @Component
 export default class Dashboard extends Vue {
-  draggingBook;
-  originShelf;
-  formattedData;
-
-  public async created() {
-    await dispatchGetPersonalShelvesAndBooks(this.$store);
-    await dispatchUpdateRecommendationsSilent(this.$store);
-  }
 
   get greetedUser() {
     const userProfile = readUserProfile(this.$store);
@@ -127,116 +119,6 @@ export default class Dashboard extends Vue {
     }
   }
 
-  public favoriteClick(e, fromShelf, book, inFavorites) {
-    e.stopPropagation();
-    const favoriteShelf = this.formattedData.Favourites;
-
-    let data = {};
-    let newFavoritesIDs = this.getBookIds(favoriteShelf, book, !inFavorites);
-
-    data[favoriteShelf.api_name] = newFavoritesIDs;
-
-    if (fromShelf.api_name == 'recommendation_shelf') {
-      let newRecommendedIDs = this.getBookIds(fromShelf, book, false);
-      data[fromShelf.api_name] = newRecommendedIDs;
-    }
-    dispatchUpdateShelves(this.$store, data);
-  }
-
-  public startDrag(event, book, shelf) {
-    this.draggingBook = book;
-    this.originShelf = shelf;
-  }
-
-  public getBookIds(shelf, book, addBook) {
-    let newdestinationShelfBookIDs: string[] = [];
-    shelf.books.forEach((b) => {
-      if (addBook || book.id != b.id) newdestinationShelfBookIDs.push(b.id);
-    });
-    if (addBook) newdestinationShelfBookIDs.push(book.id);
-    return newdestinationShelfBookIDs;
-  }
-
-  public onDrop(event, destinationShelfBooks) {
-    if (this.validDrop(destinationShelfBooks)) {
-      let data = {};
-      if (this.originShelf.api_name == 'favorite_shelf') {
-        let otherShelves = new Array();
-        const formattedData = this.formattedData;
-
-        if (destinationShelfBooks != formattedData.Reading)
-          otherShelves.push(formattedData.Reading);
-        if (destinationShelfBooks != formattedData['To Read'])
-          otherShelves.push(formattedData['To Read']);
-        if (destinationShelfBooks != formattedData.Read)
-          otherShelves.push(this.formattedData.Read);
-
-        let possibleShelf: any | null = null;
-        otherShelves.forEach((shelf) => {
-          shelf.books.forEach((book) => {
-            if (book.id == this.draggingBook.id) possibleShelf = shelf;
-          });
-        });
-
-        if (possibleShelf != null) {
-          let newOriginShelfBookIDs = this.getBookIds(
-            possibleShelf,
-            this.draggingBook,
-            false
-          );
-          data[possibleShelf.api_name] = newOriginShelfBookIDs;
-        }
-      } else if (
-        this.originShelf.api_name == 'recommendation_shelf' ||
-        destinationShelfBooks.api_name != 'favorite_shelf'
-      ) {
-        let newOriginShelfBookIDs = this.getBookIds(
-          this.originShelf,
-          this.draggingBook,
-          false
-        );
-        data[this.originShelf.api_name] = newOriginShelfBookIDs;
-      }
-      let newdestinationShelfBookIDs = this.getBookIds(
-        destinationShelfBooks,
-        this.draggingBook,
-        true
-      );
-
-      (data[destinationShelfBooks.api_name] = newdestinationShelfBookIDs),
-        dispatchUpdateShelves(this.$store, data);
-    }
-    this.draggingBook = null;
-    this.originShelf = '';
-  }
-
-  private validDrop(shelf) {
-    if (shelf == this.originShelf) return false;
-    for (const book of shelf.books) {
-      if (book.id == this.draggingBook.id) {
-        commitAddNotification(this.$store, {
-          content: '"' + book.title + '" already exists in ' + shelf.title,
-          color: 'error',
-        });
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public clickRow(book) {
-    commitChangeCurrentBook(this.$store, book);
-    this.$router.push({ name: 'bookDetails' });
-  }
-
-  public updateRecommendations() {
-    dispatchUpdateRecommendations(this.$store);
-  }
-
-  public showAddBookDialog() {
-    commitIsShowingAddBookDialog(this.$store, true);
-  }
-
   get userFavouriteGenres() {
     const userProfile = readUserProfile(this.$store);
     if (userProfile) {
@@ -245,25 +127,6 @@ export default class Dashboard extends Vue {
       }
     }
     return [];
-  }
-
-  public updateFavoritesInShelf(shelf, set) {
-    shelf.forEach(
-      (book, index) => (shelf[index].isFavorite = set.has(book.id))
-    );
-  }
-
-  public updateFavorites(personalShelvesData) {
-    if (personalShelvesData == null) return;
-    let set = new Set();
-    personalShelvesData?.favorite_shelf.forEach((book, index) => {
-      personalShelvesData!.favorite_shelf[index].isFavorite = true;
-      set.add(book.id);
-    });
-
-    this.updateFavoritesInShelf(personalShelvesData?.read_shelf, set);
-    this.updateFavoritesInShelf(personalShelvesData?.reading_shelf, set);
-    this.updateFavoritesInShelf(personalShelvesData?.toread_shelf, set);
   }
 
   get getShelvesAndBooks() {
@@ -286,25 +149,25 @@ export default class Dashboard extends Vue {
         api_name: 'toread_shelf',
         title: 'To Read',
       },
-      Reading: {
+      "Reading": {
         headers: sharedHeaders,
         books: personalShelvesData?.reading_shelf,
         api_name: 'reading_shelf',
         title: 'Reading',
       },
-      Read: {
+      "Read": {
         headers: sharedHeaders,
         books: personalShelvesData?.read_shelf,
         api_name: 'read_shelf',
         title: 'Read',
       },
-      Favourites: {
+      "Favourites": {
         headers: sharedHeaders,
         books: personalShelvesData?.favorite_shelf,
         api_name: 'favorite_shelf',
         title: 'Favourites',
       },
-      Recommendations: {
+      "Recommendations": {
         headers: sharedHeaders,
         books: personalShelvesData?.recommendation_shelf,
         api_name: 'recommendation_shelf',
@@ -313,6 +176,146 @@ export default class Dashboard extends Vue {
     };
     this.formattedData = formattedData;
     return formattedData;
+  }
+  public draggingBook;
+  public originShelf;
+  public formattedData;
+
+  public async created() {
+    await dispatchGetPersonalShelvesAndBooks(this.$store);
+    await dispatchUpdateRecommendationsSilent(this.$store);
+  }
+
+  public favoriteClick(e, fromShelf, book, inFavorites) {
+    e.stopPropagation();
+    const favoriteShelf = this.formattedData.Favourites;
+
+    const data = {};
+    const newFavoritesIDs = this.getBookIds(favoriteShelf, book, !inFavorites);
+
+    data[favoriteShelf.api_name] = newFavoritesIDs;
+
+    if (fromShelf.api_name == 'recommendation_shelf') {
+      const newRecommendedIDs = this.getBookIds(fromShelf, book, false);
+      data[fromShelf.api_name] = newRecommendedIDs;
+    }
+    dispatchUpdateShelves(this.$store, data);
+  }
+
+  public startDrag(event, book, shelf) {
+    this.draggingBook = book;
+    this.originShelf = shelf;
+  }
+
+  public getBookIds(shelf, book, addBook) {
+    const newdestinationShelfBookIDs: string[] = [];
+    shelf.books.forEach((b) => {
+      if (addBook || book.id != b.id) { newdestinationShelfBookIDs.push(b.id); }
+    });
+    if (addBook) { newdestinationShelfBookIDs.push(book.id); }
+    return newdestinationShelfBookIDs;
+  }
+
+  public onDrop(event, destinationShelfBooks) {
+    if (this.validDrop(destinationShelfBooks)) {
+      const data = {};
+      if (this.originShelf.api_name == 'favorite_shelf') {
+        const otherShelves = new Array();
+        const formattedData = this.formattedData;
+
+        if (destinationShelfBooks != formattedData.Reading) {
+          otherShelves.push(formattedData.Reading);
+        }
+        if (destinationShelfBooks != formattedData['To Read']) {
+          otherShelves.push(formattedData['To Read']);
+        }
+        if (destinationShelfBooks != formattedData.Read) {
+          otherShelves.push(this.formattedData.Read);
+        }
+
+        let possibleShelf: any | null = null;
+        otherShelves.forEach((shelf) => {
+          shelf.books.forEach((book) => {
+            if (book.id == this.draggingBook.id) { possibleShelf = shelf; }
+          });
+        });
+
+        if (possibleShelf != null) {
+          const newOriginShelfBookIDs = this.getBookIds(
+            possibleShelf,
+            this.draggingBook,
+            false,
+          );
+          data[possibleShelf.api_name] = newOriginShelfBookIDs;
+        }
+      } else if (
+        this.originShelf.api_name == 'recommendation_shelf' ||
+        destinationShelfBooks.api_name != 'favorite_shelf'
+      ) {
+        const newOriginShelfBookIDs = this.getBookIds(
+          this.originShelf,
+          this.draggingBook,
+          false,
+        );
+        data[this.originShelf.api_name] = newOriginShelfBookIDs;
+      }
+      const newdestinationShelfBookIDs = this.getBookIds(
+        destinationShelfBooks,
+        this.draggingBook,
+        true,
+      );
+
+      (data[destinationShelfBooks.api_name] = newdestinationShelfBookIDs),
+        dispatchUpdateShelves(this.$store, data);
+    }
+    this.draggingBook = null;
+    this.originShelf = '';
+  }
+
+  public clickRow(book) {
+    commitChangeCurrentBook(this.$store, book);
+    this.$router.push({ name: 'bookDetails' });
+  }
+
+  public updateRecommendations() {
+    dispatchUpdateRecommendations(this.$store);
+  }
+
+  public showAddBookDialog() {
+    commitIsShowingAddBookDialog(this.$store, true);
+  }
+
+  public updateFavoritesInShelf(shelf, set) {
+    shelf.forEach(
+      (book, index) => (shelf[index].isFavorite = set.has(book.id)),
+    );
+  }
+
+  public updateFavorites(personalShelvesData) {
+    if (personalShelvesData == null) { return; }
+    const set = new Set();
+    personalShelvesData?.favorite_shelf.forEach((book, index) => {
+      personalShelvesData!.favorite_shelf[index].isFavorite = true;
+      set.add(book.id);
+    });
+
+    this.updateFavoritesInShelf(personalShelvesData?.read_shelf, set);
+    this.updateFavoritesInShelf(personalShelvesData?.reading_shelf, set);
+    this.updateFavoritesInShelf(personalShelvesData?.toread_shelf, set);
+  }
+
+  private validDrop(shelf) {
+    if (shelf == this.originShelf) { return false; }
+    for (const book of shelf.books) {
+      if (book.id == this.draggingBook.id) {
+        commitAddNotification(this.$store, {
+          content: '"' + book.title + '" already exists in ' + shelf.title,
+          color: 'error',
+        });
+        return false;
+      }
+    }
+    return true;
   }
 }
 </script>

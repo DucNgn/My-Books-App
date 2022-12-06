@@ -209,7 +209,6 @@ export const actions = {
         }
     },
     async actionSearchBookByTitle(context: MainContext, payload) {
-        console.log(payload)
         try {
             const response = await api.getBookByTitle(context.state.token, payload);
             if (response.data) {
@@ -218,7 +217,7 @@ export const actions = {
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }
-    }
+    },
 };
 
 const { dispatch } = getStoreAccessors<MainState | any, State>('');

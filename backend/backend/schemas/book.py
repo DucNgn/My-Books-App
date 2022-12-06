@@ -7,7 +7,7 @@ class BookBase(BaseModel):
     title: Optional[str] = None
     author: Optional[str] = None
     rating: Optional[str] = None
-    description: Optional[str]= None
+    description: Optional[str] = None
     isbn: Optional[str] = None
     genre: Optional[str] = None
     num_of_pages: Optional[int] = None
@@ -39,6 +39,7 @@ class Book(BookInDBBase):
 
 class BookInDB(BookInDBBase):
     pass
+
 
 class BookSearch(BaseModel):
     book_title: str
