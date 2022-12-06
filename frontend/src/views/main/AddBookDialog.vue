@@ -29,12 +29,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { IBookInfo } from "@/interfaces";
+import { IBookInfo } from '@/interfaces';
 import { readPersonalShelves, readShowAddBookDialog, readBookSearchResults } from '@/store/main/getters';
 import { commitIsShowingAddBookDialog, commitRemoveBookSearchResults } from '@/store/main/mutations';
 import { dispatchUpdateShelves, dispatchSearchBooksByTitle } from '@/store/main/actions';
 import { VueGoodTable } from 'vue-good-table';
-import 'vue-good-table/dist/vue-good-table.css'
+import 'vue-good-table/dist/vue-good-table.css';
 
 
 Vue.component('vue-good-table', VueGoodTable);
@@ -42,16 +42,16 @@ Vue.component('vue-good-table', VueGoodTable);
 
 @Component
 export default class AddBookDialog extends Vue {
-    queryInput: string = "";
-    rowSelection: IBookInfo[] = []
+    public queryInput: string = '';
+    public rowSelection: IBookInfo[] = [];
 
-    timer: number | undefined;
+    public timer: number | undefined;
     public performSearch(e) {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
             const bookTitle = e.srcElement._value;
-            dispatchSearchBooksByTitle(this.$store, { "book_title": bookTitle });
-        }, 500)
+            dispatchSearchBooksByTitle(this.$store, { book_title: bookTitle });
+        }, 500);
     }
 
     get headers() {
@@ -74,12 +74,12 @@ export default class AddBookDialog extends Vue {
 
     public addBooksToShelf() {
         const newBookIDs: string[] = [];
-        this.rowSelection.forEach(element => newBookIDs.push(element.id));
+        this.rowSelection.forEach((element) => newBookIDs.push(element.id));
         const personalShelves = readPersonalShelves(this.$store);
         const toReadBookIDs: string[] = [];
-        personalShelves?.toread_shelf.forEach(book => toReadBookIDs.push(book.id));
+        personalShelves?.toread_shelf.forEach((book) => toReadBookIDs.push(book.id));
         const newToReadBookIDs = toReadBookIDs.concat(newBookIDs);
-        dispatchUpdateShelves(this.$store, { "toread_shelf": newToReadBookIDs });
+        dispatchUpdateShelves(this.$store, { toread_shelf: newToReadBookIDs });
         this.closeDialog();
     }
 
@@ -90,7 +90,7 @@ export default class AddBookDialog extends Vue {
     public closeDialog() {
         commitRemoveBookSearchResults(this.$store);
         commitIsShowingAddBookDialog(this.$store, false);
-        this.queryInput = "";
+        this.queryInput = '';
     }
 }
 </script>

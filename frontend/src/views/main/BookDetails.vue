@@ -71,19 +71,19 @@ export default class Main extends Vue {
     get bookAuthor() {
         return this.bookData?.author;
     }
-    
+
     get bookRating() {
         return this.bookData?.rating;
     }
-    
+
     get bookDescription() {
         return this.bookData?.description;
     }
-    
+
     get bookPublisher() {
         return this.bookData?.publisher;
     }
-    
+
     get bookPublicationYear() {
         return this.bookData?.publication_year;
     }
@@ -105,5 +105,4 @@ export default class Main extends Vue {
     }
 
 }
-
 </script>

@@ -45,15 +45,19 @@ def test_create_with_owner(db) -> None:
         toread_shelf=[],
         read_shelf=[],
         favorite_shelf=[],
-        recommendation_shelf=[]
+        recommendation_shelf=[],
     )
     # Do Work
     global test_shelf
-    test_shelf = crud.shelves.create_with_owner(db, obj_in=shelves_in, owner_id=test_user.id)
+    test_shelf = crud.shelves.create_with_owner(
+        db, obj_in=shelves_in, owner_id=test_user.id
+    )
     global to_update_session
     to_update_session = db
     # Assert
-    assert test_shelf.id == 5  # 5 since there already exist shelves created from db startup
+    assert (
+        test_shelf.id == 5
+    )  # 5 since there already exist shelves created from db startup
     assert test_shelf.reading_shelf == ["1"]
     assert test_shelf.toread_shelf == []
     assert test_shelf.read_shelf == []
@@ -76,6 +80,7 @@ def test_get(db) -> None:
 
 
 # get multi has no query for shelves, did not write test for it
+
 
 def test_update(db) -> None:
     # Set Up
@@ -103,5 +108,6 @@ def test_remove(db) -> None:
     retrieved = crud.shelves.get(db, deleted.id)
     # Assert
     assert retrieved is None
+
 
 # TODO: test update where going from reading to to read removes from reading

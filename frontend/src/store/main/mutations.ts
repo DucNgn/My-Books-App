@@ -42,8 +42,8 @@ export const mutations = {
         state.bookSearchResults = payload;
     },
     removeBookSearchResults(state: MainState) {
-        state.bookSearchResults = []
-    }
+        state.bookSearchResults = [];
+    },
 };
 
 const {commit} = getStoreAccessors<MainState | any, State>('');
@@ -61,4 +61,4 @@ export const commitSetShelves = commit(mutations.setPersonalShelves);
 export const commitIsShowingAddBookDialog = commit(mutations.setIsShowingAddBookDialog);
 export const commitSetBookSearchResults = commit(mutations.setBookSearchResults);
 export const commitRemoveBookSearchResults = commit(mutations.removeBookSearchResults);
- 
+

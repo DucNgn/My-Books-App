@@ -1,12 +1,12 @@
-import axios from "axios";
-import { apiUrl } from "@/env";
+import axios from 'axios';
+import { apiUrl } from '@/env';
 import {
   IUserProfile,
   IUserProfileUpdate,
   IUserProfileCreate,
   IShelvesStorage,
   IBookInfo,
-} from "./interfaces";
+} from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -19,35 +19,35 @@ function authHeaders(token: string) {
 export const api = {
   async logInGetToken(username: string, password: string) {
     const params = new URLSearchParams();
-    params.append("username", username);
-    params.append("password", password);
+    params.append('username', username);
+    params.append('password', password);
 
     return axios.post(`${apiUrl}/api/v1/login/access-token`, params);
   },
   async getMe(token: string) {
     return axios.get<IUserProfile>(
       `${apiUrl}/api/v1/users/me`,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
   async updateMe(token: string, data: IUserProfileUpdate) {
     return axios.put<IUserProfile>(
       `${apiUrl}/api/v1/users/me`,
       data,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
   async getUsers(token: string) {
     return axios.get<IUserProfile[]>(
       `${apiUrl}/api/v1/users/`,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
   async updateUser(token: string, userId: number, data: IUserProfileUpdate) {
     return axios.put(
       `${apiUrl}/api/v1/users/${userId}`,
       data,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
   async createUser(token: string, data: IUserProfileCreate) {
@@ -65,14 +65,14 @@ export const api = {
   async getShelvesAndBooks(token: string) {
     return axios.get<IShelvesStorage>(
       `${apiUrl}/api/v1/shelves/all`,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
   async updateShelves(token: string, data) {
     return axios.put<IShelvesStorage>(
       `${apiUrl}/api/v1/shelves`,
       data,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
   async updateRecommendations(token: string) {
@@ -82,7 +82,7 @@ export const api = {
     return axios.put<IBookInfo[]>(
       `${apiUrl}/api/v1/books/search_not_on_shelves`,
       data,
-      authHeaders(token)
+      authHeaders(token),
     );
   },
 };
